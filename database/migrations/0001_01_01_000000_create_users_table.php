@@ -17,6 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone_number')->nullable();
+            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('user_type', ['umum', 'mahasiswa'])->default('umum');
+            $table->boolean('is_verified')->default(false);
+            $table->string('campus_name')->nullable();
+            $table->string('nim_nik')->nullable();
+            $table->text('address')->nullable();
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

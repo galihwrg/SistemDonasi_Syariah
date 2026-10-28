@@ -30,13 +30,13 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
                 'user_type' => 'umum',
                 'is_verified' => true,
-                'address' => 'Jl. Dakwah Nusantara No. 14, Jakarta Selatan',
+                'address' => 'Ciomas, Kab. Bogor',
             ]
         );
 
         // 3. Sample Verified Mahasiswa Contributor
         $mahasiswa = User::updateOrCreate(
-            ['email' => 'galih.wiragama@mail.ugm.ac.id'],
+            ['email' => 'galih.wiragama@unpak.ac.id'],
             [
                 'name' => 'Galih Wiragama',
                 'password' => Hash::make('password123'),
@@ -44,8 +44,8 @@ class DatabaseSeeder extends Seeder
                 'role' => 'user',
                 'user_type' => 'mahasiswa',
                 'is_verified' => true,
-                'campus_name' => 'Universitas Gadjah Mada',
-                'nim_nik' => '21/478921/TK/52109',
+                'campus_name' => 'Universitas Pakuan',
+                'nim_nik' => '065121001',
                 'address' => 'Kec. Caringin, Kab. Bogor',
             ]
         );

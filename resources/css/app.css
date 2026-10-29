@@ -1,9 +1,53 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Fonts */
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Noto Serif', ui-serif, Georgia, serif;
+    --font-arabic: 'Amiri', serif;
+
+    /* Brand Colors */
+    --color-emerald-deep: #0F382C;
+    --color-emerald-medium: #1A5C44;
+    --color-emerald-light: #2E7D5E;
+    --color-gold: #D4AF37;
+    --color-gold-light: #E8CC5A;
+    --color-eggshell: #F9F9F6;
+    --color-eggshell-dark: #F0F0EA;
+    --color-surface: #FFFFFF;
+    --color-ink: #1A1A1A;
+    --color-ink-muted: #6B7280;
+    --color-ink-subtle: #9CA3AF;
+    --color-error: #DC2626;
+    --color-success: #16A34A;
+}
+
+/* Base */
+body {
+    font-family: var(--font-sans);
+    background-color: var(--color-eggshell);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Arabic text */
+.font-arabic {
+    font-family: var(--font-arabic);
+    direction: rtl;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-eggshell-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-emerald-light);
+    border-radius: 2px;
 }

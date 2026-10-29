@@ -40,12 +40,12 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Galih Wiragama',
                 'password' => Hash::make('password123'),
-                'phone_number' => '081298765432',
+                'phone_number' => '081211491093',
                 'role' => 'user',
                 'user_type' => 'mahasiswa',
                 'is_verified' => true,
                 'campus_name' => 'Universitas Pakuan',
-                'nim_nik' => '065121001',
+                'nim_nik' => '065123176',
                 'address' => 'Kec. Caringin, Kab. Bogor',
             ]
         );

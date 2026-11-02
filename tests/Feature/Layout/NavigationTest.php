@@ -23,7 +23,7 @@ class NavigationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Kuantum Pelopor');
-        $response->assertSee('Visual Dakwah');
+        $response->assertSee('Galeri Visual Islami');
         $response->assertSee('Notifikasi');
         $response->assertSee(asset('images/logo.png'));
     }

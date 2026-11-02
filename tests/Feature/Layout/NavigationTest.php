@@ -95,7 +95,7 @@ class NavigationTest extends TestCase
         $response = $this->get(route('koleksi'));
 
         $response->assertStatus(200);
-        $response->assertSee('Koleksi Tersimpan');
+        $response->assertSee('Koleksi Saya');
     }
 
     public function test_halaman_waktu_salat_dapat_diakses(): void

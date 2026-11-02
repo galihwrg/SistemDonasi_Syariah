@@ -1,19 +1,28 @@
 <?php
 
+use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PrayerTimeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes (Akses Bebas dengan Layout Mobile)
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/jelajah', [ExploreController::class, 'index'])->name('jelajah');
+Route::get('/unggah', [ArtworkController::class, 'create'])->name('unggah');
+Route::get('/koleksi', [CollectionController::class, 'index'])->name('koleksi');
+Route::get('/waktu-salat', [PrayerTimeController::class, 'index'])->name('waktu-salat');
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes (belum login)
+| Guest Routes (Belum login)
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
@@ -26,16 +35,17 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Authenticated Routes (Khusus Pengguna Login)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::post('/keluar', [AuthController::class, 'logout'])->name('logout');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (placeholder)
+| Admin Routes (Placeholder)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {

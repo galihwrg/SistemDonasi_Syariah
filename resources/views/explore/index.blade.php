@@ -1,70 +1,179 @@
-<x-layouts.app title="Jelajah Karya Dakwah — Kuantum Pelopor Indonesia">
+<x-layouts.app title="Jelajah Galeri Visual — Kuantum Pelopor Indonesia">
 
     <div class="px-4 py-4 space-y-4">
 
-        {{-- Header Title --}}
+        {{-- Top Section Heading (Consistent with Stitch Editorial style) --}}
         <div>
-            <h1 class="text-xl font-bold font-serif text-[#0F382C]">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#f4f4f1] border border-[#dadad7] text-[10px] font-medium text-[#735c00] mb-1">
+                <span class="material-symbols-outlined text-[13px] text-[#735c00]" style="font-variation-settings: 'FILL' 1;">stars</span>
+                <span>Kurasi Visual Dakwah Syariah</span>
+            </div>
+            <h1 class="text-xl font-bold font-serif text-[#0f382c]">
                 Jelajah Karya Dakwah
             </h1>
-            <p class="text-xs text-[#6B7280] mt-0.5">
-                Kurasi visual syariah beresolusi tinggi bebas wakaf
+            <p class="text-[11px] text-[#414845] mt-0.5">
+                Koleksi fotografi resolusi tinggi berlisensi wakaf berkah
             </p>
         </div>
 
-        {{-- Search input --}}
+        {{-- Search Input (Matching Home Stitch pattern) --}}
         <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-[#717975] pointer-events-none">
+                search
             </span>
             <input type="text"
-                   placeholder="Cari berdasarkan kata kunci, judul, atau surah..."
-                   class="w-full pl-10 pr-4 py-3 rounded-2xl text-xs bg-white border border-[#E5E7EB] placeholder-gray-400 text-gray-800 outline-none focus:border-[#0F382C] focus:ring-2 focus:ring-[#0F382C]/10 transition-all shadow-2xs">
+                   placeholder="Cari masjid, arsitektur, kaligrafi, alam..."
+                   class="w-full pl-10 pr-4 py-2.5 rounded-xl text-[12px] bg-white border border-[#dadad7] placeholder-[#717975]/70 text-[#1a1c1b] outline-none focus:border-[#0f382c] focus:ring-1 focus:ring-[#0f382c] transition-all shadow-xs">
         </div>
 
-        {{-- Filter categories --}}
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 text-xs">
-            <button class="px-3 py-1.5 rounded-full font-medium text-xs bg-[#0F382C] text-white shrink-0">
+        {{-- Category Chips (Scrollable, Stitch Colors) --}}
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar -mx-4 px-4 text-xs select-none">
+            <button class="px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-[#0f382c] text-white shrink-0 shadow-xs">
                 Semua
             </button>
-            <button class="px-3 py-1.5 rounded-full font-medium text-xs bg-white text-[#6B7280] border border-[#E5E7EB] shrink-0">
-                Arsitektur
+            <button class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-[#414845] border border-[#dadad7] shrink-0 hover:bg-[#f4f4f1]">
+                Arsitektur Masjid
             </button>
-            <button class="px-3 py-1.5 rounded-full font-medium text-xs bg-white text-[#6B7280] border border-[#E5E7EB] shrink-0">
-                Alam &amp; Tadabbur
+            <button class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-[#414845] border border-[#dadad7] shrink-0 hover:bg-[#f4f4f1]">
+                Kaligrafi &amp; Mushaf
             </button>
-            <button class="px-3 py-1.5 rounded-full font-medium text-xs bg-white text-[#6B7280] border border-[#E5E7EB] shrink-0">
-                Kaligrafi
+            <button class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-[#414845] border border-[#dadad7] shrink-0 hover:bg-[#f4f4f1]">
+                Alam &amp; Ayat Kauniyah
             </button>
-            <button class="px-3 py-1.5 rounded-full font-medium text-xs bg-white text-[#6B7280] border border-[#E5E7EB] shrink-0">
-                Kegiatan Umat
+            <button class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-[#414845] border border-[#dadad7] shrink-0 hover:bg-[#f4f4f1]">
+                Sosial &amp; Umat
             </button>
         </div>
 
-        {{-- Gallery Grid Placeholder (Will be dynamic in Sprint 2) --}}
-        <div class="grid grid-cols-2 gap-3 pt-2">
-            @for ($i = 1; $i <= 4; $i++)
-                <div class="bg-white rounded-2xl overflow-hidden shadow-2xs border border-[#E5E7EB] flex flex-col">
-                    <div class="relative aspect-4/5 bg-gray-100 flex items-center justify-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 opacity-40 text-[#0F382C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                        </svg>
-                        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#0F382C]/80 text-white">
-                            Karya {{ $i }}
+        {{-- Visual Grid Cards (Aligned with Home Stitch visual cards) --}}
+        <div class="grid grid-cols-2 gap-3 pt-1">
+            {{-- Card 1 --}}
+            <div class="bg-white rounded-2xl overflow-hidden border border-[#dadad7] shadow-xs flex flex-col group cursor-pointer hover:shadow-md transition-shadow">
+                <div class="relative aspect-4/5 bg-[#eeeeeb] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80"
+                         alt="Masjid Nabawi Madinah"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-semibold bg-[#0f382c]/85 text-white backdrop-blur-xs">
+                        Arsitektur
+                    </span>
+                    <button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#0f382c] flex items-center justify-center transition-colors shadow-xs" title="Simpan ke Koleksi">
+                        <span class="material-symbols-outlined text-[15px]">bookmark</span>
+                    </button>
+                </div>
+                <div class="p-2.5 space-y-1">
+                    <h3 class="text-[12px] font-semibold text-[#0f382c] line-clamp-1 font-serif leading-snug">
+                        Kubah Hijau &amp; Pilar Nabawi
+                    </h3>
+                    <p class="text-[10px] text-[#717975] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">person</span>
+                        Ahmad Al-Ghifari
+                    </p>
+                    <div class="flex items-center justify-between pt-1 border-t border-[#f4f4f1]">
+                        <span class="text-[9px] font-medium text-[#735c00] bg-[#ffe088]/40 px-1.5 py-0.5 rounded">
+                            Wakaf Terbuka
+                        </span>
+                        <span class="text-[10px] text-[#414845] font-semibold">
+                            Rp 50rb
                         </span>
                     </div>
-                    <div class="p-2.5">
-                        <h3 class="text-xs font-bold text-[#0F382C] line-clamp-1 font-serif">
-                            Dokumentasi Karya #{{ $i }}
-                        </h3>
-                        <p class="text-[10px] text-[#6B7280] mt-0.5">
-                            Kontributor Dakwah
-                        </p>
+                </div>
+            </div>
+
+            {{-- Card 2 --}}
+            <div class="bg-white rounded-2xl overflow-hidden border border-[#dadad7] shadow-xs flex flex-col group cursor-pointer hover:shadow-md transition-shadow">
+                <div class="relative aspect-4/5 bg-[#eeeeeb] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=400&q=80"
+                         alt="Mushaf Kuno Al-Qur'an"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-semibold bg-[#0f382c]/85 text-white backdrop-blur-xs">
+                        Kaligrafi
+                    </span>
+                    <button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#0f382c] flex items-center justify-center transition-colors shadow-xs" title="Simpan ke Koleksi">
+                        <span class="material-symbols-outlined text-[15px]">bookmark</span>
+                    </button>
+                </div>
+                <div class="p-2.5 space-y-1">
+                    <h3 class="text-[12px] font-semibold text-[#0f382c] line-clamp-1 font-serif leading-snug">
+                        Mushaf Tilawah Nusantara
+                    </h3>
+                    <p class="text-[10px] text-[#717975] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">person</span>
+                        Fathurrahman
+                    </p>
+                    <div class="flex items-center justify-between pt-1 border-t border-[#f4f4f1]">
+                        <span class="text-[9px] font-medium text-[#735c00] bg-[#ffe088]/40 px-1.5 py-0.5 rounded">
+                            Wakaf Terbuka
+                        </span>
+                        <span class="text-[10px] text-[#414845] font-semibold">
+                            Rp 100rb
+                        </span>
                     </div>
                 </div>
-            @endfor
+            </div>
+
+            {{-- Card 3 --}}
+            <div class="bg-white rounded-2xl overflow-hidden border border-[#dadad7] shadow-xs flex flex-col group cursor-pointer hover:shadow-md transition-shadow">
+                <div class="relative aspect-4/5 bg-[#eeeeeb] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=400&q=80"
+                         alt="Cahaya Alam Subuh"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-semibold bg-[#0f382c]/85 text-white backdrop-blur-xs">
+                        Alam
+                    </span>
+                    <button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#0f382c] flex items-center justify-center transition-colors shadow-xs" title="Simpan ke Koleksi">
+                        <span class="material-symbols-outlined text-[15px]">bookmark</span>
+                    </button>
+                </div>
+                <div class="p-2.5 space-y-1">
+                    <h3 class="text-[12px] font-semibold text-[#0f382c] line-clamp-1 font-serif leading-snug">
+                        Tadabbur Fajar Gunung Salak
+                    </h3>
+                    <p class="text-[10px] text-[#717975] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">person</span>
+                        Irfan Hakim
+                    </p>
+                    <div class="flex items-center justify-between pt-1 border-t border-[#f4f4f1]">
+                        <span class="text-[9px] font-medium text-[#735c00] bg-[#ffe088]/40 px-1.5 py-0.5 rounded">
+                            Wakaf Terbuka
+                        </span>
+                        <span class="text-[10px] text-[#414845] font-semibold">
+                            Rp 75rb
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Card 4 --}}
+            <div class="bg-white rounded-2xl overflow-hidden border border-[#dadad7] shadow-xs flex flex-col group cursor-pointer hover:shadow-md transition-shadow">
+                <div class="relative aspect-4/5 bg-[#eeeeeb] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=400&q=80"
+                         alt="Kajian Umat Masjid"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-semibold bg-[#0f382c]/85 text-white backdrop-blur-xs">
+                        Umat
+                    </span>
+                    <button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#0f382c] flex items-center justify-center transition-colors shadow-xs" title="Simpan ke Koleksi">
+                        <span class="material-symbols-outlined text-[15px]">bookmark</span>
+                    </button>
+                </div>
+                <div class="p-2.5 space-y-1">
+                    <h3 class="text-[12px] font-semibold text-[#0f382c] line-clamp-1 font-serif leading-snug">
+                        Halaqah Al-Qur'an Santri
+                    </h3>
+                    <p class="text-[10px] text-[#717975] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">person</span>
+                        Zulkifli
+                    </p>
+                    <div class="flex items-center justify-between pt-1 border-t border-[#f4f4f1]">
+                        <span class="text-[9px] font-medium text-[#735c00] bg-[#ffe088]/40 px-1.5 py-0.5 rounded">
+                            Wakaf Terbuka
+                        </span>
+                        <span class="text-[10px] text-[#414845] font-semibold">
+                            Rp 25rb
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

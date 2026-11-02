@@ -40,6 +40,8 @@ Route::middleware('guest')->group(function () {
 */
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profil/verifikasi', [ProfileController::class, 'submitVerification'])->name('profile.verify');
+    Route::post('/profil/rekening', [ProfileController::class, 'storeBankAccount'])->name('profile.bank.store');
     Route::post('/keluar', [AuthController::class, 'logout'])->name('logout');
 });
 

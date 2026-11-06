@@ -50,6 +50,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 4. Seed Sample Artworks
+        $this->call(ArtworkSeeder::class);
+
         // 4. Sample Active Bank Account for Mahasiswa
         BankAccount::updateOrCreate(
             [

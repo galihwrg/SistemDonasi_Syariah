@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PrayerTimeController;
@@ -21,6 +22,7 @@ Route::get('/koleksi', [CollectionController::class, 'index'])->name('koleksi');
 Route::get('/waktu-salat', [PrayerTimeController::class, 'index'])->name('waktu-salat');
 Route::get('/karya/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
 Route::get('/karya/{slug}/unduh', [ArtworkController::class, 'download'])->name('artworks.download');
+Route::post('/donasi', [DonationController::class, 'store'])->name('donations.store');
 
 /*
 |--------------------------------------------------------------------------

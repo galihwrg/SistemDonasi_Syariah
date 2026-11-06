@@ -113,7 +113,9 @@
         </main>
 
         {{-- Bottom Navigation Bar (5 Menu) --}}
-        <x-bottom-navbar />
+        @if (!($hideBottomNav ?? false))
+            <x-bottom-navbar />
+        @endif
 
     </div>
 

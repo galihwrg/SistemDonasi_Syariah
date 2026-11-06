@@ -1,4 +1,4 @@
-<x-layouts.app title="{{ $artwork->title }} — Kuantum Pelopor Indonesia">
+<x-layouts.app title="{{ $artwork->title }} — Kuantum Pelopor Indonesia" :hide-bottom-nav="true">
 
     {{-- Main Container (Stitch 100% Mobile Canvas) --}}
     <div class="px-4 py-4 flex flex-col gap-5 pb-24">
@@ -151,11 +151,11 @@
     </div>
 
     {{-- Sticky Floating Mobile Bottom Bar --}}
-    <nav class="fixed bottom-0 left-0 right-0 max-w-[402px] mx-auto w-full z-40 bg-[#f9f9f6]/95 backdrop-blur-md border-t border-[#dadad7]/60 shadow-lg px-4 pt-2.5 pb-2 flex flex-col">
+    <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full z-50 bg-[#f9f9f6] border-t border-[#dadad7] shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-4 pt-2.5 pb-3 flex flex-col">
         <div class="flex items-center gap-2.5 w-full">
             {{-- Tombol Unduh 1-Klik --}}
             <a href="{{ route('artworks.download', $artwork->slug) }}"
-               class="w-11 h-11 rounded-xl border border-[#c1c8c3]/50 flex items-center justify-center text-[#0f382c] bg-white hover:bg-[#f4f4f1] active:scale-95 transition-all shrink-0 shadow-xs"
+               class="w-12 h-11 rounded-xl border border-[#c1c8c3]/60 flex items-center justify-center text-[#0f382c] bg-white hover:bg-[#f4f4f1] active:scale-95 transition-all shrink-0 shadow-xs"
                title="Unduh Foto Resolusi Tinggi (Gratis Bebas Wakaf)">
                 <span class="material-symbols-outlined text-xl">download</span>
             </a>
@@ -163,15 +163,15 @@
             {{-- Tombol Buka Pop-Up Infaq Donasi --}}
             <button type="button"
                     onclick="openDonationModal()"
-                    class="flex-1 h-11 rounded-xl bg-[#0f382c] text-white text-xs font-semibold hover:bg-[#1a5c44] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm border border-[#ffe088]/30">
+                    class="flex-1 h-11 rounded-xl bg-[#0f382c] hover:bg-[#1a5c44] text-white text-xs font-semibold active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm border border-[#ffe088]/30">
                 <span class="material-symbols-outlined text-base text-[#fed65b]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
-                <span>Infaq &amp; Donasi Dakwah</span>
+                <span class="tracking-wide">Infaq &amp; Donasi Dakwah</span>
             </button>
         </div>
         <div class="flex justify-center items-center">
-            <div class="w-32 h-1 bg-[#1a1c1b]/20 rounded-full mx-auto mt-2 mb-1"></div>
+            <div class="w-32 h-1 bg-[#1a1c1b]/20 rounded-full mx-auto mt-2"></div>
         </div>
-    </nav>
+    </div>
 
     {{-- Pop-Up Bottom Sheet Infaq & Donasi Apresiasi Karya (Komponen Reusable) --}}
     <x-donation-modal :artwork="$artwork" :img-url="$imgUrl" />

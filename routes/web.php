@@ -19,6 +19,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jelajah', [ExploreController::class, 'index'])->name('jelajah');
 Route::get('/unggah', [ArtworkController::class, 'create'])->name('unggah');
 Route::get('/koleksi', [CollectionController::class, 'index'])->name('koleksi');
+Route::post('/koleksi/toggle', [CollectionController::class, 'toggle'])->name('collections.toggle');
 Route::get('/waktu-salat', [PrayerTimeController::class, 'index'])->name('waktu-salat');
 Route::get('/karya/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
 Route::get('/karya/{slug}/unduh', [ArtworkController::class, 'download'])->name('artworks.download');

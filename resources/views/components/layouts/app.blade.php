@@ -119,5 +119,104 @@
 
     </div>
 
+    {{-- Universal Toast Notification & Bookmark Toggle JavaScript --}}
+    <div id="universal-toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] max-w-sm w-11/12 bg-[#0f382c] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform -translate-y-16 opacity-0 pointer-events-none">
+        <span id="toast-icon" class="material-symbols-outlined text-[#fed65b] text-xl shrink-0" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        <span id="toast-message" class="text-xs font-medium leading-snug"></span>
+    </div>
+
+    <script>
+        function showAppToast(message, isSuccess = true) {
+            const toast = document.getElementById('universal-toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = message;
+            if (isSuccess) {
+                toastIcon.textContent = 'check_circle';
+                toastIcon.className = 'material-symbols-outlined text-[#fed65b] text-xl shrink-0';
+            } else {
+                toastIcon.textContent = 'info';
+                toastIcon.className = 'material-symbols-outlined text-[#ffdad6] text-xl shrink-0';
+            }
+
+            toast.classList.remove('-translate-y-16', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-16', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        async function toggleBookmark(artworkId, buttonEl) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            try {
+                const response = await fetch('{{ route("collections.toggle") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ artwork_id: artworkId })
+                });
+
+                if (response.status === 401) {
+                    showAppToast('Silakan masuk terlebih dahulu untuk menyimpan ke koleksi.', false);
+                    setTimeout(() => {
+                        window.location.href = '{{ route("login") }}';
+                    }, 1200);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAppToast(data.message, true);
+                    
+                    // Update all buttons referencing this artwork on page
+                    const buttons = document.querySelectorAll(`button[data-artwork-id="${artworkId}"]`);
+                    buttons.forEach(btn => {
+                        btn.setAttribute('data-saved', data.saved ? 'true' : 'false');
+                        const icon = btn.querySelector('.material-symbols-outlined');
+                        if (icon) {
+                            if (data.saved) {
+                                icon.style.fontVariationSettings = "'FILL' 1";
+                                btn.classList.remove('bg-white/80', 'text-[#0f382c]');
+                                btn.classList.add('bg-[#0f382c]/85', 'text-[#fed65b]');
+                            } else {
+                                icon.style.fontVariationSettings = "'FILL' 0";
+                                btn.classList.remove('bg-[#0f382c]/85', 'text-[#fed65b]');
+                                btn.classList.add('bg-white/80', 'text-[#0f382c]');
+                            }
+                        }
+                    });
+
+                    // Jika berada di halaman /koleksi dan karya dihapus, hilangkan card secara halus
+                    const card = document.getElementById(`collection-card-${artworkId}`);
+                    if (card && !data.saved) {
+                        card.style.transition = 'all 0.3s ease-out';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            card.remove();
+                            const grid = document.getElementById('collections-grid');
+                            if (grid && grid.children.length === 0) {
+                                window.location.reload();
+                            }
+                        }, 300);
+                    }
+                } else {
+                    showAppToast(data.message || 'Terjadi kesalahan.', false);
+                }
+            } catch (err) {
+                console.error(err);
+                showAppToast('Gagal memproses bookmark.', false);
+            }
+        }
+    </script>
 </body>
 </html>

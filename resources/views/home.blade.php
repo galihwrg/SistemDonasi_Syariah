@@ -128,10 +128,16 @@
                             <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#0f382c]/80 backdrop-blur-md text-[9.5px] font-medium text-[#c1ecda] pointer-events-none">
                                 {{ $art->category->name ?? 'Dakwah' }}
                             </span>
+                            @php
+                                $isSaved = auth()->check() && auth()->user()->savedArtworks->contains($art->id);
+                            @endphp
                             <button aria-label="Simpan karya"
-                                    class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 backdrop-blur-md text-[#0f382c] flex items-center justify-center hover:bg-white transition-all shadow-xs"
-                                    type="button">
-                                <span class="material-symbols-outlined text-[15px]">bookmark</span>
+                                    type="button"
+                                    onclick="toggleBookmark({{ $art->id }}, this)"
+                                    data-artwork-id="{{ $art->id }}"
+                                    data-saved="{{ $isSaved ? 'true' : 'false' }}"
+                                    class="bookmark-btn absolute top-2 right-2 w-7 h-7 rounded-full {{ $isSaved ? 'bg-[#0f382c]/85 text-[#fed65b]' : 'bg-white/80 text-[#0f382c]' }} backdrop-blur-md flex items-center justify-center hover:bg-white transition-all shadow-xs active:scale-90">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' {{ $isSaved ? '1' : '0' }};">bookmark</span>
                             </button>
                         </div>
                         <div class="p-2.5 flex flex-col justify-between flex-1">

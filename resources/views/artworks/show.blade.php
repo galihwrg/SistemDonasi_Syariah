@@ -36,7 +36,21 @@
                     <span class="material-symbols-outlined text-[13px] text-[#735c00]" style="font-variation-settings: 'FILL' 1;">verified</span>
                     Lisensi Bebas Wakaf
                 </span>
-                <span>{{ $artwork->dimensions ?? '3840 x 2160 px' }}</span>
+                <div class="flex items-center gap-3">
+                    <span>{{ $artwork->dimensions ?? '3840 x 2160 px' }}</span>
+                    @php
+                        $isSaved = auth()->check() && auth()->user()->savedArtworks->contains($artwork->id);
+                    @endphp
+                    <button type="button"
+                            onclick="toggleBookmark({{ $artwork->id }}, this)"
+                            data-artwork-id="{{ $artwork->id }}"
+                            data-saved="{{ $isSaved ? 'true' : 'false' }}"
+                            class="bookmark-btn flex items-center gap-1 text-[11px] font-semibold {{ $isSaved ? 'text-[#735c00]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors"
+                            title="Simpan ke Koleksi">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' {{ $isSaved ? '1' : '0' }};">bookmark</span>
+                        <span>{{ $isSaved ? 'Tersimpan' : 'Simpan' }}</span>
+                    </button>
+                </div>
             </div>
         </div>
 

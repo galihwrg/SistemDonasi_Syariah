@@ -1,23 +1,51 @@
 @props([
     'title' => null,
+    'wideLayout' => false,
 ])
 
 <header class="px-5 py-3 flex items-center justify-between border-b border-[#dadad7]/50 bg-[#f9f9f6]/95 backdrop-blur-md sticky top-0 z-40">
     {{-- Brand Logo & Title --}}
-    <a href="{{ route('home') }}" class="flex items-center gap-3 group transition-transform active:scale-95" aria-label="Beranda Kuantum Pelopor">
-        <x-application-logo class="h-10 w-auto object-contain rounded-xl shadow-xs" />
-        <div class="flex flex-col text-left">
-            <h1 class="font-serif text-[16px] leading-tight font-semibold text-[#0f382c] tracking-tight group-hover:text-[#1a5c44] transition-colors">
-                Kuantum Pelopor
-            </h1>
-            <p class="text-[10px] tracking-normal text-[#735c00] font-semibold mt-0.5">
-                Galeri Visual Islami
-            </p>
-        </div>
-    </a>
+    <div class="flex items-center gap-6">
+        <a href="{{ route('home') }}" class="flex items-center gap-3 group transition-transform active:scale-95" aria-label="Beranda Kuantum Pelopor">
+            <x-application-logo class="h-10 w-auto object-contain rounded-xl shadow-xs" />
+            <div class="flex flex-col text-left">
+                <h1 class="font-serif text-[16px] leading-tight font-semibold text-[#0f382c] tracking-tight group-hover:text-[#1a5c44] transition-colors">
+                    Kuantum Pelopor
+                </h1>
+                <p class="text-[10px] tracking-normal text-[#735c00] font-semibold mt-0.5">
+                    Galeri Visual Islami
+                </p>
+            </div>
+        </a>
+
+        @if ($wideLayout)
+            {{-- Desktop Header Navigation Links --}}
+            <nav class="hidden md:flex items-center gap-6 pl-4 border-l border-[#dadad7]/60">
+                <a href="{{ route('home') }}" class="text-xs font-semibold {{ request()->routeIs('home') ? 'text-[#0f382c]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors">
+                    Beranda
+                </a>
+                <a href="{{ route('jelajah') }}" class="text-xs font-semibold {{ request()->routeIs('jelajah*') ? 'text-[#0f382c] border-b-2 border-[#0f382c] pb-0.5' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors">
+                    Lihat Galeri
+                </a>
+                <a href="{{ route('koleksi') }}" class="text-xs font-semibold {{ request()->routeIs('koleksi*') ? 'text-[#0f382c]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors">
+                    Koleksi Saya
+                </a>
+                <a href="{{ route('waktu-salat') }}" class="text-xs font-semibold {{ request()->routeIs('waktu-salat*') ? 'text-[#0f382c]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors">
+                    Jadwal Salat
+                </a>
+            </nav>
+        @endif
+    </div>
 
     {{-- Right Cluster Actions --}}
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 sm:gap-3">
+        @if ($wideLayout)
+            <a href="{{ route('unggah') }}"
+               class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#0f382c] hover:bg-[#1a5c44] text-white text-xs font-semibold shadow-xs transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[16px] text-[#fed65b]">add</span>
+                <span>Unggah Karya</span>
+            </a>
+        @endif
         {{-- Notification Button --}}
         <button aria-label="Notifikasi"
                 type="button"

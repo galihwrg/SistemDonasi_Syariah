@@ -10,34 +10,57 @@ use Illuminate\View\View;
 class ExploreController extends Controller
 {
     /**
-     * Tampilkan halaman jelajah karya visual.
+     * Tampilkan halaman jelajah karya visual (Mobile & Desktop Responsif).
      */
     public function index(Request $request): View
     {
         $categories = Category::all();
         $selectedCategory = $request->query('kategori');
         $searchQuery = $request->query('q');
+        $sortBy = $request->query('sort', 'terbaru'); // terbaru, terpopuler, donasi
 
-        $artworks = Artwork::approved()
+        $query = Artwork::approved()
             ->with(['user', 'category'])
-            ->withSum(['donations as total_donations' => function ($query) {
-                $query->where('payment_status', 'settlement');
+            ->withSum(['donations as total_donations' => function ($q) {
+                $q->where('payment_status', 'settlement');
             }], 'amount')
-            ->when($selectedCategory, function ($query, $cat) {
-                $query->whereHas('category', function ($q) use ($cat) {
-                    $q->where('slug', $cat);
+            ->when($selectedCategory, function ($q, $cat) {
+                $q->whereHas('category', function ($sub) use ($cat) {
+                    $sub->where('slug', $cat);
                 });
             })
-            ->when($searchQuery, function ($query, $q) {
-                $query->where(function ($sub) use ($q) {
-                    $sub->where('title', 'like', "%{$q}%")
-                        ->orWhere('narration', 'like', "%{$q}%")
-                        ->orWhere('quran_reference', 'like', "%{$q}%");
+            ->when($searchQuery, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('title', 'like', "%{$search}%")
+                        ->orWhere('narration', 'like', "%{$search}%")
+                        ->orWhere('quran_reference', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%");
+                        });
                 });
-            })
-            ->latest()
-            ->get();
+            });
 
-        return view('explore.index', compact('categories', 'artworks', 'selectedCategory', 'searchQuery'));
+        // Pengurutan sesuai kriteria penerimaan Issue #8
+        match ($sortBy) {
+            'terpopuler' => $query->orderByDesc('download_count')->latest('id'),
+            'donasi' => $query->orderByDesc('total_donations')->latest('id'),
+            default => $query->latest('id'),
+        };
+
+        $artworks = $query->get();
+
+        // Metrik statistik galeri untuk banner desktop
+        $totalActiveArtworks = Artwork::approved()->count();
+        $totalInfaqAmount = \App\Models\Donation::where('payment_status', 'settlement')->sum('amount');
+
+        return view('explore.index', compact(
+            'categories',
+            'artworks',
+            'selectedCategory',
+            'searchQuery',
+            'sortBy',
+            'totalActiveArtworks',
+            'totalInfaqAmount'
+        ));
     }
 }

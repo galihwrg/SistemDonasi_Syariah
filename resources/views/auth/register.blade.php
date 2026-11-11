@@ -2,6 +2,15 @@
 
     <div class="w-full max-w-sm mx-auto">
 
+        {{-- Navigasi Kembali ke Beranda --}}
+        <div class="mb-4">
+            <a href="{{ route('home') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-[#E5E7EB] text-xs font-semibold text-[#0F382C] hover:bg-[#F3F4F6] transition-all shadow-2xs active:scale-95">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <span>Kembali ke Beranda</span>
+            </a>
+        </div>
+
         {{-- Brand Badge --}}
         <div class="flex flex-col items-center mb-6">
             <div class="flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full text-xs font-medium"

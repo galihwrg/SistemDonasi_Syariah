@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jelajah', [ExploreController::class, 'index'])->name('jelajah');
-Route::get('/unggah', [ArtworkController::class, 'create'])->name('unggah');
 Route::get('/koleksi', [CollectionController::class, 'index'])->name('koleksi');
 Route::post('/koleksi/toggle', [CollectionController::class, 'toggle'])->name('collections.toggle');
 Route::get('/waktu-salat', [PrayerTimeController::class, 'index'])->name('waktu-salat');
@@ -44,7 +43,11 @@ Route::middleware('guest')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/unggah', [ArtworkController::class, 'create'])->name('unggah');
+    Route::post('/unggah', [ArtworkController::class, 'store'])->name('artworks.store');
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profil/postingan', [ArtworkController::class, 'myArtworks'])->name('artworks.my');
+    Route::delete('/karya/{artwork}', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
     Route::post('/profil/verifikasi', [ProfileController::class, 'submitVerification'])->name('profile.verify');
     Route::post('/profil/rekening', [ProfileController::class, 'storeBankAccount'])->name('profile.bank.store');
     Route::post('/keluar', [AuthController::class, 'logout'])->name('logout');

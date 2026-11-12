@@ -138,6 +138,16 @@
                         <span class="material-symbols-outlined text-[18px]">savings</span>
                     </div>
                 </div>
+
+                {{-- Link Akses ke Postingan Saya --}}
+                <div class="pt-2 border-t border-[#c1c8c3]/20 flex items-center justify-between">
+                    <a href="{{ route('artworks.my') }}"
+                       class="text-xs font-semibold text-[#0f382c] hover:underline flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px] text-[#735c00]">photo_library</span>
+                        <span>Kelola Postingan Saya</span>
+                    </a>
+                    <span class="text-[10px] text-[#717975]">Per karya &amp; status</span>
+                </div>
             </div>
 
         @else
@@ -251,6 +261,16 @@
                     </button>
                 </div>
             </form>
+
+            {{-- Akses Cepat Postingan Saya bagi User Belum Verifikasi --}}
+            <div class="bg-white rounded-xl p-3 border border-[#c1c8c3]/30 shadow-xs flex items-center justify-between">
+                <a href="{{ route('artworks.my') }}"
+                   class="text-xs font-semibold text-[#0f382c] hover:underline flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px] text-[#735c00]">photo_library</span>
+                    <span>Lihat &amp; Kelola Postingan Saya</span>
+                </a>
+                <span class="material-symbols-outlined text-sm text-[#717975]">chevron_right</span>
+            </div>
         @endif
 
         {{-- Logout Section Sederhana & Aman --}}

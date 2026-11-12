@@ -78,12 +78,14 @@ class NavigationTest extends TestCase
 
     public function test_halaman_unggah_dapat_diakses(): void
     {
+        $user = \App\Models\User::factory()->create();
+
         Category::create([
             'name' => 'Arsitektur',
             'slug' => 'arsitektur',
         ]);
 
-        $response = $this->get(route('unggah'));
+        $response = $this->actingAs($user)->get(route('unggah'));
 
         $response->assertStatus(200);
         $response->assertSee('Unggah Karya Visual');

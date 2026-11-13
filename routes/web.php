@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CurationController;
 use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CollectionController;
@@ -55,12 +56,17 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (Placeholder)
+| Admin Routes (Kurasi Foto & Konfirmasi Verifikasi)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         abort_unless(auth()->user()->isAdmin(), 403);
-        return view('admin.dashboard');
+        return redirect()->route('admin.curation.index');
     })->name('dashboard');
+
+    // Kurasi & Antrean Moderasi Foto Karya Umat (Issue #10)
+    Route::get('/kurasi', [CurationController::class, 'index'])->name('curation.index');
+    Route::post('/kurasi/{artwork}/approve', [CurationController::class, 'approve'])->name('curation.approve');
+    Route::post('/kurasi/{artwork}/reject', [CurationController::class, 'reject'])->name('curation.reject');
 });

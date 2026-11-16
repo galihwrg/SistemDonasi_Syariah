@@ -22,6 +22,7 @@ Route::get('/jelajah', [ExploreController::class, 'index'])->name('jelajah');
 Route::get('/koleksi', [CollectionController::class, 'index'])->name('koleksi');
 Route::post('/koleksi/toggle', [CollectionController::class, 'toggle'])->name('collections.toggle');
 Route::get('/waktu-salat', [PrayerTimeController::class, 'index'])->name('waktu-salat');
+Route::get('/api/waktu-salat', [PrayerTimeController::class, 'api'])->name('api.waktu-salat');
 Route::get('/karya/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
 Route::get('/karya/{slug}/unduh', [ArtworkController::class, 'download'])->name('artworks.download');
 Route::post('/donasi', [DonationController::class, 'store'])->name('donations.store');

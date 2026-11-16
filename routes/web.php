@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CurationController;
+use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CollectionController;
@@ -69,4 +70,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/kurasi', [CurationController::class, 'index'])->name('curation.index');
     Route::post('/kurasi/{artwork}/approve', [CurationController::class, 'approve'])->name('curation.approve');
     Route::post('/kurasi/{artwork}/reject', [CurationController::class, 'reject'])->name('curation.reject');
+
+    // Verifikasi Dokumen Identitas Kontributor KTM/KTP (Issue #11)
+    Route::get('/verifikasi', [VerificationController::class, 'index'])->name('verification.index');
+    Route::post('/verifikasi/{verification}/approve', [VerificationController::class, 'approve'])->name('verification.approve');
+    Route::post('/verifikasi/{verification}/reject', [VerificationController::class, 'reject'])->name('verification.reject');
 });

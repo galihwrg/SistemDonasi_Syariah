@@ -96,11 +96,13 @@
                     </a>
 
                     {{-- Tab 2: Konfirmasi Akun (Sprint 3 Issue 11) --}}
-                    <a href="#"
-                       class="inline-flex items-center px-2 py-4 border-b-2 border-transparent text-sm font-medium text-gray-600 hover:text-[#0F382C] gap-2 transition-colors relative opacity-70">
+                    <a href="{{ route('admin.verification.index') }}"
+                       class="inline-flex items-center px-2 py-4 border-b-2 {{ request()->routeIs('admin.verification*') ? 'border-[#0F382C] text-[#0F382C] font-bold' : 'border-transparent text-gray-600 hover:text-[#0F382C]' }} text-sm gap-2 transition-colors relative">
                         <span class="material-symbols-outlined text-[18px]">verified_user</span>
                         <span>Konfirmasi Akun</span>
-                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        @if (($pendingVerifCount ?? 0) > 0)
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        @endif
                     </a>
 
                     {{-- Tab 3: Lihat Galeri --}}

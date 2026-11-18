@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CurationController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\Auth\AuthController;
@@ -76,4 +77,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/verifikasi', [VerificationController::class, 'index'])->name('verification.index');
     Route::post('/verifikasi/{verification}/approve', [VerificationController::class, 'approve'])->name('verification.approve');
     Route::post('/verifikasi/{verification}/reject', [VerificationController::class, 'reject'])->name('verification.reject');
+
+    // Lihat Galeri Desktop Admin (Stitch)
+    Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
 });

@@ -106,9 +106,8 @@
                     </a>
 
                     {{-- Tab 3: Lihat Galeri --}}
-                    <a href="{{ route('jelajah') }}"
-                       target="_blank"
-                       class="inline-flex items-center px-2 py-4 border-b-2 border-transparent text-sm font-medium text-gray-600 hover:text-[#0F382C] gap-1.5 transition-colors">
+                    <a href="{{ route('admin.gallery.index') }}"
+                       class="inline-flex items-center px-2 py-4 border-b-2 {{ request()->routeIs('admin.gallery*') ? 'border-[#0F382C] text-[#0F382C] font-bold' : 'border-transparent text-gray-600 hover:text-[#0F382C]' }} text-sm gap-1.5 transition-colors">
                         <span class="material-symbols-outlined text-[18px]">visibility</span>
                         <span>Lihat Galeri</span>
                         <span class="material-symbols-outlined text-[14px]">open_in_new</span>

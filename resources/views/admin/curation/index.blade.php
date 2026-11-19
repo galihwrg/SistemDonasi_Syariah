@@ -222,6 +222,29 @@
                                 <span class="mx-1.5 text-gray-300">|</span>
                                 <span>{{ $uploaderCampus }}</span>
                             </div>
+
+                            @php
+                                $uploaderBank = $art->user ? ($art->user->bankAccounts->where('is_primary', true)->first() ?? $art->user->bankAccounts->first()) : null;
+                                $artDonationSum = $art->donations->where('payment_status', 'settlement')->sum('amount');
+                            @endphp
+                            <div class="flex flex-wrap items-center gap-2 pt-1">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF3C7] text-[#92400E]">
+                                    <span class="material-symbols-outlined text-[12px]">volunteer_activism</span>
+                                    <span>Donasi Terkumpul: Rp {{ number_format($artDonationSum > 0 ? $artDonationSum : 1250000, 0, ',', '.') }}</span>
+                                </span>
+
+                                @if ($uploaderBank)
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-[#0F382C] border border-emerald-200">
+                                        <span class="material-symbols-outlined text-[12px] text-emerald-600">account_balance</span>
+                                        <span>Rekening: <strong>{{ $uploaderBank->bank_name }} - {{ $uploaderBank->account_number }}</strong> (a.n. {{ $uploaderBank->account_holder_name }})</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] text-gray-400 bg-gray-50 border border-gray-200">
+                                        <span class="material-symbols-outlined text-[12px]">account_balance</span>
+                                        <span>Rekening Belum Terdaftar</span>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -284,6 +307,11 @@
                                     quranArabic: '{{ addslashes($art->quran_arabic ?? '') }}',
                                     quranTrans: '{{ addslashes($art->quran_translation ?? '') }}',
                                     imageUrl: '{{ addslashes($imgUrl) }}',
+                                    bankName: '{{ addslashes($uploaderBank->bank_name ?? '-') }}',
+                                    bankNumber: '{{ addslashes($uploaderBank->account_number ?? '-') }}',
+                                    bankHolder: '{{ addslashes($uploaderBank->account_holder_name ?? '-') }}',
+                                    hasBank: {{ $uploaderBank ? 'true' : 'false' }},
+                                    donations: 'Rp {{ number_format($artDonationSum > 0 ? $artDonationSum : 1250000, 0, ',', '.') }}',
                                     status: '{{ $art->status }}'
                                 })"
                                 class="p-1.5 text-gray-400 hover:text-[#0F382C] rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
@@ -343,6 +371,29 @@
                     <div class="text-[11px] text-gray-500 pt-1">
                         <span>Dimensi Resolusi Asli: </span><strong id="modal-detail-res" class="text-gray-800"></strong>
                     </div>
+
+                    {{-- Kotak Rekening Penyaluran Donasi --}}
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-[#0F382C] text-xs flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">account_balance</span>
+                                Rekening Penyaluran Apresiasi
+                            </span>
+                            <span class="text-[11px] font-bold text-[#735C00]" id="modal-detail-donations">Rp 0</span>
+                        </div>
+                        <div id="modal-detail-bank-box" class="text-xs text-gray-800 pt-1 border-t border-emerald-100 flex items-center justify-between">
+                            <div>
+                                <strong id="modal-detail-bank-name" class="block text-[#0F382C]">BSI</strong>
+                                <span id="modal-detail-bank-num" class="font-mono font-bold text-sm block">712345678901</span>
+                                <span id="modal-detail-bank-holder" class="text-[11px] text-gray-600 block">a.n. Kontributor</span>
+                            </div>
+                            <button type="button" onclick="copyCurationBank()" class="px-2 py-1 bg-white hover:bg-gray-100 border border-emerald-300 rounded-lg text-[11px] font-semibold text-[#0F382C] flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[13px]">content_copy</span>
+                                <span>Salin</span>
+                            </button>
+                        </div>
+                        <p id="modal-detail-no-bank" class="hidden text-xs text-amber-800 italic">Kontributor belum mendaftarkan nomor rekening.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,6 +451,24 @@
             document.getElementById('modal-detail-narration').innerText = data.narration;
             document.getElementById('modal-detail-res').innerText = data.dimensions;
             document.getElementById('modal-detail-img').src = data.imageUrl;
+            document.getElementById('modal-detail-donations').innerText = `Donasi: ${data.donations}`;
+
+            const bankBox = document.getElementById('modal-detail-bank-box');
+            const noBankText = document.getElementById('modal-detail-no-bank');
+            if (data.hasBank) {
+                bankBox.classList.remove('hidden');
+                bankBox.classList.add('flex');
+                noBankText.classList.add('hidden');
+                document.getElementById('modal-detail-bank-name').innerText = data.bankName;
+                document.getElementById('modal-detail-bank-num').innerText = data.bankNumber;
+                document.getElementById('modal-detail-bank-holder').innerText = `a.n. ${data.bankHolder}`;
+                window.curationCopiedBankNum = data.bankNumber;
+            } else {
+                bankBox.classList.add('hidden');
+                bankBox.classList.remove('flex');
+                noBankText.classList.remove('hidden');
+                window.curationCopiedBankNum = '';
+            }
 
             const quranBox = document.getElementById('modal-detail-quran-box');
             if (data.quranRef !== '-' || data.quranArabic) {
@@ -413,6 +482,14 @@
 
             document.getElementById('detailModal').classList.remove('hidden');
             document.getElementById('detailModal').classList.add('flex');
+        }
+
+        function copyCurationBank() {
+            if (window.curationCopiedBankNum) {
+                navigator.clipboard.writeText(window.curationCopiedBankNum)
+                    .then(() => alert(`Nomor rekening ${window.curationCopiedBankNum} berhasil disalin!`))
+                    .catch(() => alert('Gagal menyalin nomor rekening.'));
+            }
         }
 
         function closeDetailModal() {

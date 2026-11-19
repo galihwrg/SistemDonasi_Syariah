@@ -32,7 +32,7 @@ class VerificationController extends Controller
             'umum' => ContributorVerification::where('id_type', 'ktp')->count(),
         ];
 
-        $query = ContributorVerification::with(['user'])
+        $query = ContributorVerification::with(['user.bankAccounts'])
             ->latest('id');
 
         // Filter tab status

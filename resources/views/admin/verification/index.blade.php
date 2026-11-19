@@ -230,6 +230,20 @@
                                 <span class="flex items-center gap-1 font-mono text-[11px] bg-gray-100 px-2 py-0.5 rounded text-gray-800">
                                     {{ $isMahasiswa ? 'NIM: ' : 'NIK: ' }} {{ $verif->id_number }}
                                 </span>
+                                @php
+                                    $primaryBank = $user ? ($user->bankAccounts->where('is_primary', true)->first() ?? $user->bankAccounts->first()) : null;
+                                @endphp
+                                @if ($primaryBank)
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-50 text-[#0F382C] border border-emerald-200 px-2 py-0.5 rounded-md" title="Rekening Bank Penyaluran Donasi">
+                                        <span class="material-symbols-outlined text-[14px] text-emerald-700">account_balance</span>
+                                        <span>{{ $primaryBank->bank_name }}: <strong class="font-mono">{{ $primaryBank->account_number }}</strong> (a.n. {{ $primaryBank->account_holder_name }})</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[11px] text-gray-400 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+                                        <span class="material-symbols-outlined text-[14px]">account_balance</span>
+                                        <span>Belum mendaftarkan rekening</span>
+                                    </span>
+                                @endif
                                 <span class="flex items-center gap-1 text-gray-500">
                                     <span class="material-symbols-outlined text-[16px] text-[#735C00]">attachment</span>
                                     Dokumen {{ strtoupper($verif->id_type) }} terlampir
@@ -258,6 +272,10 @@
                                     idNumber: '{{ addslashes($verif->id_number) }}',
                                     institution: '{{ addslashes($institution) }}',
                                     docUrl: '{{ addslashes($docUrl) }}',
+                                    bankName: '{{ addslashes($primaryBank->bank_name ?? '-') }}',
+                                    bankNumber: '{{ addslashes($primaryBank->account_number ?? '-') }}',
+                                    bankHolder: '{{ addslashes($primaryBank->account_holder_name ?? '-') }}',
+                                    hasBank: {{ $primaryBank ? 'true' : 'false' }},
                                     status: '{{ $verif->status }}',
                                     notes: '{{ addslashes($verif->admin_notes ?? '') }}',
                                     approveUrl: '{{ route('admin.verification.approve', $verif->id) }}',
@@ -340,7 +358,7 @@
 
             {{-- Modal Body --}}
             <div class="p-5 overflow-y-auto space-y-4">
-                {{-- Data Ringkas Kontak --}}
+                {{-- Data Ringkas Kontak & Rekening Bank Penyaluran --}}
                 <div class="grid grid-cols-2 gap-3 p-3.5 bg-[#F4F4F1] rounded-2xl text-xs">
                     <div>
                         <span class="text-gray-500 block">Email Akun:</span>
@@ -357,6 +375,33 @@
                     <div>
                         <span class="text-gray-500 block">Status Pengajuan:</span>
                         <span class="inline-block mt-0.5 font-bold uppercase text-[11px]" id="vm-status">-</span>
+                    </div>
+                    <div class="col-span-2 pt-2 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 flex items-center gap-1 font-semibold">
+                                <span class="material-symbols-outlined text-[15px] text-[#0F382C]">account_balance</span>
+                                Rekening Penyaluran Donasi / Apresiasi:
+                            </span>
+                            <span id="vm-bank-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Tersedia</span>
+                        </div>
+                        <div id="vm-bank-info" class="mt-1.5 p-2.5 bg-white rounded-xl border border-gray-200 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-[#0F382C] block" id="vm-bank-name">Bank Syariah Indonesia</span>
+                                <span class="font-mono text-sm font-bold text-gray-900 tracking-wider" id="vm-bank-number">712345678901</span>
+                                <span class="text-[11px] text-gray-600 block" id="vm-bank-holder">a.n. Nama Kontributor</span>
+                            </div>
+                            <button type="button"
+                                    id="vm-btn-copy-bank"
+                                    onclick="copyBankNumber()"
+                                    class="px-2.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-[#0F382C] text-xs font-semibold flex items-center gap-1 transition-all active:scale-95">
+                                <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                                <span>Salin Rekening</span>
+                            </button>
+                        </div>
+                        <div id="vm-no-bank-info" class="hidden mt-1.5 p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">info</span>
+                            <span>Kontributor belum mendaftarkan nomor rekening bank penyaluran donasi.</span>
+                        </div>
                     </div>
                 </div>
 
@@ -466,6 +511,30 @@
             document.getElementById('vm-doc-full').href = data.docUrl;
             document.getElementById('vm-approve-form').action = data.approveUrl;
 
+            // Info Rekening Bank
+            const bankInfo = document.getElementById('vm-bank-info');
+            const noBankInfo = document.getElementById('vm-no-bank-info');
+            const bankBadge = document.getElementById('vm-bank-badge');
+
+            if (data.hasBank) {
+                bankInfo.classList.remove('hidden');
+                bankInfo.classList.add('flex');
+                noBankInfo.classList.add('hidden');
+                bankBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
+                bankBadge.innerText = 'Tersedia';
+                document.getElementById('vm-bank-name').innerText = data.bankName;
+                document.getElementById('vm-bank-number').innerText = data.bankNumber;
+                document.getElementById('vm-bank-holder').innerText = `a.n. ${data.bankHolder}`;
+                window.currentCopiedBankNumber = data.bankNumber;
+            } else {
+                bankInfo.classList.add('hidden');
+                bankInfo.classList.remove('flex');
+                noBankInfo.classList.remove('hidden');
+                bankBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800';
+                bankBadge.innerText = 'Belum Ada';
+                window.currentCopiedBankNumber = '';
+            }
+
             const btnReject = document.getElementById('vm-btn-reject');
             btnReject.onclick = function() {
                 closeVerificationModal();
@@ -486,6 +555,14 @@
             document.getElementById('reject-form').action = `/admin/verifikasi/${id}/reject`;
             document.getElementById('rejectModal').classList.remove('hidden');
             document.getElementById('rejectModal').classList.add('flex');
+        }
+
+        function copyBankNumber() {
+            if (window.currentCopiedBankNumber) {
+                navigator.clipboard.writeText(window.currentCopiedBankNumber)
+                    .then(() => alert(`Nomor rekening ${window.currentCopiedBankNumber} berhasil disalin!`))
+                    .catch(() => alert('Gagal menyalin nomor rekening.'));
+            }
         }
 
         function closeRejectModal() {

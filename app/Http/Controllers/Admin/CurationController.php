@@ -32,7 +32,7 @@ class CurationController extends Controller
             'rejected' => Artwork::where('status', 'rejected')->count(),
         ];
 
-        $query = Artwork::with(['user', 'category'])
+        $query = Artwork::with(['user.bankAccounts', 'category', 'donations'])
             ->latest('id');
 
         if ($statusFilter !== 'all' && in_array($statusFilter, ['pending', 'approved', 'rejected'])) {

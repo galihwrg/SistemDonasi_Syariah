@@ -28,39 +28,37 @@
             <span class="material-symbols-outlined text-[14px]">info</span>
         </div>
 
-        {{-- 1. Card Ringkas: Waktu Salat Berikutnya --}}
-        <section class="rounded-2xl bg-gradient-to-br from-[#0f382c] to-[#164e3f] text-white p-4.5 shadow-md relative overflow-hidden">
-            <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#3f6658]/30 blur-xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex items-center justify-between">
+        {{-- 1. Card Ringkas: Waktu Salat Berikutnya (Stitch 100%) --}}
+        <section class="rounded-2xl bg-white p-4 border border-[#e5e5e0] shadow-xs">
+            <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#fed65b] animate-ping"></span>
-                    <span class="text-[10.5px] font-bold tracking-wider uppercase text-[#c1ecda]">
+                    <span class="w-2 h-2 rounded-full bg-[#c59b27] animate-pulse"></span>
+                    <span class="text-[11px] font-semibold tracking-wider uppercase text-[#535955]">
                         Waktu Salat Berikutnya
                     </span>
                 </div>
-                <span id="display-timezone" class="text-[10.5px] font-semibold text-[#ffe088] bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20">
+                <span id="display-timezone" class="text-[11px] font-medium text-[#735c00]">
                     {{ $prayerData['timezone'] }}
                 </span>
             </div>
 
-            <div class="relative z-10 mt-3 flex items-center justify-between">
+            <div class="mt-2.5 flex items-center justify-between">
                 <div>
-                    <h2 class="font-serif text-[24px] font-bold text-white leading-tight">
+                    <h2 class="font-serif text-[22px] font-bold text-[#0f382c] leading-tight">
                         <span id="display-next-name">{{ $nextPrayer['name'] }}</span>
-                        <span class="font-normal text-[17px] text-[#c1ecda]"> — <span id="display-next-time">{{ $nextPrayer['time'] }}</span></span>
+                        <span class="font-normal text-[16px] text-[#535955]"> — <span id="display-next-time">{{ $nextPrayer['time'] }} {{ $prayerData['timezone'] === 'Zona WIB' ? 'WIB' : ($prayerData['timezone'] === 'Zona WITA' ? 'WITA' : 'WIT') }}</span></span>
                     </h2>
-                    <p class="text-[12px] text-[#ffe088] font-medium mt-1 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[15px]">schedule</span>
+                    <p class="text-[12px] text-[#735c00] font-medium mt-0.5 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">schedule</span>
                         <span id="display-next-label">{{ $nextPrayer['label'] }}</span>
                     </p>
                 </div>
                 <button type="button"
                         onclick="togglePrayerAudioReminder()"
                         id="btn-bell-reminder"
-                        class="w-10 h-10 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center text-[#ffe088] shrink-0 hover:bg-white/25 transition-all active:scale-95 shadow-xs"
-                        title="Aktifkan Pengingat Salat">
-                    <span id="bell-reminder-icon" class="material-symbols-outlined text-[20px]">notifications_active</span>
+                        class="w-9 h-9 rounded-full bg-[#f4f4f1] border border-[#e5e5e0] flex items-center justify-center text-[#0f382c] shrink-0 hover:bg-[#e2e3e0] transition-colors"
+                        title="Pengingat Salat">
+                    <span id="bell-reminder-icon" class="material-symbols-outlined text-[18px]">notifications_active</span>
                 </button>
             </div>
         </section>
@@ -271,8 +269,9 @@
             document.getElementById('display-timezone').innerText = data.timezone;
 
             if (data.next_prayer) {
+                const tzSuffix = data.timezone === 'Zona WIB' ? 'WIB' : (data.timezone === 'Zona WITA' ? 'WITA' : 'WIT');
                 document.getElementById('display-next-name').innerText = data.next_prayer.name;
-                document.getElementById('display-next-time').innerText = data.next_prayer.time;
+                document.getElementById('display-next-time').innerText = `${data.next_prayer.time} ${tzSuffix}`;
                 document.getElementById('display-next-label').innerText = data.next_prayer.label;
             }
 

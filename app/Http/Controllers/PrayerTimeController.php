@@ -24,7 +24,7 @@ class PrayerTimeController extends Controller
         $city = $request->query('city');
 
         $prayerData = $this->prayerService->getPrayerScheduleAndQibla($latitude, $longitude, $city);
-        $nextPrayer = $this->prayerService->determineNextPrayer($prayerData['timings']);
+        $nextPrayer = $this->prayerService->determineNextPrayer($prayerData['timings'], null, (float)($prayerData['timezone_offset'] ?? 7.0));
 
         return view('prayer-times.index', compact('prayerData', 'nextPrayer'));
     }
@@ -45,7 +45,7 @@ class PrayerTimeController extends Controller
         $city = $validated['city'] ?? null;
 
         $prayerData = $this->prayerService->getPrayerScheduleAndQibla($latitude, $longitude, $city);
-        $nextPrayer = $this->prayerService->determineNextPrayer($prayerData['timings']);
+        $nextPrayer = $this->prayerService->determineNextPrayer($prayerData['timings'], null, (float)($prayerData['timezone_offset'] ?? 7.0));
 
         return response()->json([
             'status' => 'success',

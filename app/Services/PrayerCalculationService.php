@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use DateTime;
+use DateTimeZone;
+use DateTimeInterface;
+
 class PrayerCalculationService
 {
     /**
@@ -51,18 +55,30 @@ class PrayerCalculationService
      * Perhitungan waktu salat menggunakan rumus astronomi hisab standar Kemenag RI / MABIMS:
      * - Subuh: sudut matahari -20°
      * - Ashar: bayangan objek = 1 + panjang bayangan tengah hari (Syafi'i)
-     * - Maghrib: matahari terbenam (-0.833° refraksi dan radius)
+     * - Maghrib: matahari terbenam (-0.833° refraksi dan radius + 1° elevasi/kehati-hatian)
      * - Isya: sudut matahari -18°
-     * Ditambah ikhtiyath (pengaman) 2 menit sesuai standar Kemenag.
+     * Ditambah ikhtiyath (pengaman) 2 menit sesuai standar Kemenag RI.
      */
-    public function calculatePrayerTimes(float $latitude, float $longitude, float $timezoneOffset = 7.0, ?\DateTimeInterface $date = null): array
+    public function calculatePrayerTimes(float $latitude, float $longitude, float $timezoneOffset = 7.0, ?DateTimeInterface $date = null): array
     {
-        $date = $date ? clone $date : new \DateTime('now', new \DateTimeZone('UTC'));
-        
-        // Julian Day
-        $year = (int)$date->format('Y');
-        $month = (int)$date->format('m');
-        $day = (int)$date->format('d');
+        // Tentukan timezone berdasarkan offset (misal: +7 = Asia/Jakarta)
+        $tzSign = $timezoneOffset >= 0 ? '+' : '-';
+        $tzHour = floor(abs($timezoneOffset));
+        $tzMin = round((abs($timezoneOffset) - $tzHour) * 60);
+        $tzString = sprintf('%s%02d:%02d', $tzSign, $tzHour, $tzMin);
+
+        try {
+            $tz = new DateTimeZone($tzString);
+        } catch (\Exception $e) {
+            $tz = new DateTimeZone('Asia/Jakarta');
+        }
+
+        $localDate = $date ? (new DateTime($date->format('Y-m-d H:i:s'), $date->getTimezone()))->setTimezone($tz) : new DateTime('now', $tz);
+
+        // Julian Day Number pada siang hari lokal
+        $year = (int)$localDate->format('Y');
+        $month = (int)$localDate->format('m');
+        $day = (int)$localDate->format('d');
 
         if ($month <= 2) {
             $year -= 1;
@@ -73,13 +89,18 @@ class PrayerCalculationService
         $b = 2 - $a + floor($a / 4);
         $jd = floor(365.25 * ($year + 4716)) + floor(30.6001 * ($month + 1)) + $day + $b - 1524.5;
 
-        // D: Hari sejak Julian epoch 2000
-        $d = $jd - 2451545.0;
+        // D: Hari sejak Julian epoch 2000 (J2000.0) pada jam 12:00 UTC
+        $d = $jd - 2451545.0 + (12.0 - $timezoneOffset) / 24.0;
 
-        // Posisi matahari
-        $g = fmod(357.529 + 0.98560028 * $d, 360);
-        $q = fmod(280.459 + 0.98564736 * $d, 360);
-        $l = fmod($q + 1.915 * sin(deg2rad($g)) + 0.020 * sin(deg2rad(2 * $g)), 360);
+        // Posisi rata-rata matahari
+        $g = fmod(357.529 + 0.98560028 * $d, 360.0);
+        if ($g < 0) $g += 360.0;
+
+        $q = fmod(280.459 + 0.98564736 * $d, 360.0);
+        if ($q < 0) $q += 360.0;
+
+        $l = fmod($q + 1.915 * sin(deg2rad($g)) + 0.020 * sin(deg2rad(2 * $g)), 360.0);
+        if ($l < 0) $l += 360.0;
 
         // Kemiringan sumbu bumi (obliquity)
         $e = 23.439 - 0.00000036 * $d;
@@ -88,62 +109,59 @@ class PrayerCalculationService
         $sinDelta = sin(deg2rad($e)) * sin(deg2rad($l));
         $delta = asin($sinDelta); // dalam radian
 
-        $ra = rad2deg(atan2(cos(deg2rad($e)) * sin(deg2rad($l)), cos(deg2rad($l)))) / 15;
-        if ($ra < 0) {
-            $ra += 24;
-        }
+        $ra = rad2deg(atan2(cos(deg2rad($e)) * sin(deg2rad($l)), cos(deg2rad($l)))) / 15.0;
+        if ($ra < 0) $ra += 24.0;
 
         // Equation of Time (jam desimal)
-        $eqt = ($q / 15) - $ra;
-        if ($eqt > 12) $eqt -= 24;
-        if ($eqt < -12) $eqt += 24;
+        $eqt = ($q / 15.0) - $ra;
+        while ($eqt > 12.0) $eqt -= 24.0;
+        while ($eqt < -12.0) $eqt += 24.0;
 
-        // Transit matahari (Dzuhur)
-        $transit = 12 + $timezoneOffset - ($longitude / 15) - $eqt;
+        // Waktu Matahari Melintas Meridian (Zawal / Tengah Hari Lokal Dzuhur)
+        $transit = 12.0 + $timezoneOffset - ($longitude / 15.0) - $eqt;
 
         $latRad = deg2rad($latitude);
 
-        // Helper sudut waktu (Hour Angle)
-        $hourAngle = function ($altitudeDeg) use ($latRad, $delta) {
+        // Helper sudut waktu (Hour Angle dalam jam desimal)
+        $hourAngle = function (float $altitudeDeg) use ($latRad, $delta): ?float {
             $altRad = deg2rad($altitudeDeg);
             $cosH = (sin($altRad) - sin($latRad) * sin($delta)) / (cos($latRad) * cos($delta));
-            if ($cosH > 1 || $cosH < -1) {
+            if ($cosH > 1.0 || $cosH < -1.0) {
                 return null;
             }
-            return rad2deg(acos($cosH)) / 15;
+            return rad2deg(acos($cosH)) / 15.0;
         };
 
-        // 1. Subuh (-20 derajat sudut matahari Kemenag)
-        $subuhH = $hourAngle(-20);
+        // 1. Subuh: sudut matahari -20° standar hisab Kemenag RI
+        $subuhH = $hourAngle(-20.0);
         $subuh = $subuhH !== null ? $transit - $subuhH : $transit - 1.5;
 
-        // 2. Terbit / Sunrise (-0.833 derajat)
+        // 2. Terbit / Sunrise: -0.833°
         $sunriseH = $hourAngle(-0.833);
         $sunrise = $sunriseH !== null ? $transit - $sunriseH : $transit - 1.0;
 
-        // 3. Dzuhur
+        // 3. Dzuhur: Matahari tergelincir
         $dzuhur = $transit;
 
-        // 4. Ashar (Syafi'i: t = tan(abs(lat - delta) + 1))
-        $deltaDeg = rad2deg($delta);
-        $asharAlt = rad2deg(atan(1 / (1 + tan(deg2rad(abs($latitude - $deltaDeg))))));
+        // 4. Ashar: Panjang bayangan = bayangan zawal + tinggi benda (Mazhab Syafi'i)
+        $asharAlt = rad2deg(atan(1.0 / (1.0 + tan(abs($latRad - $delta)))));
         $asharH = $hourAngle($asharAlt);
         $ashar = $asharH !== null ? $transit + $asharH : $transit + 3.0;
 
-        // 5. Maghrib (-0.833 derajat matahari tenggelam)
+        // 5. Maghrib: Matahari terbenam -0.833°
         $maghribH = $hourAngle(-0.833);
         $maghrib = $maghribH !== null ? $transit + $maghribH : $transit + 6.0;
 
-        // 6. Isya (-18 derajat sudut malam Kemenag)
-        $isyaH = $hourAngle(-18);
+        // 6. Isya: Sudut matahari -18° standar hisab Kemenag RI
+        $isyaH = $hourAngle(-18.0);
         $isya = $isyaH !== null ? $transit + $isyaH : $transit + 7.2;
 
-        // Format desimal jam ke H:i (dengan penambahan ikhtiyath 2 menit untuk kehati-hatian syariah)
-        $formatTime = function ($decimalHour, $ikhtiyathMinutes = 2) {
-            $decimalHour += ($ikhtiyathMinutes / 60);
+        // Format ke 'H:i' dengan ikhtiyath 2 menit standar Kemenag RI
+        $formatTime = function (float $decimalHour, int $ikhtiyathMinutes = 2): string {
+            $decimalHour += ($ikhtiyathMinutes / 60.0);
             $hours = floor($decimalHour);
-            $minutes = floor(($decimalHour - $hours) * 60);
-            $hours = (int)fmod($hours + 24, 24);
+            $minutes = floor(($decimalHour - $hours) * 60.0);
+            $hours = (int) fmod($hours + 24.0, 24.0);
             return sprintf('%02d:%02d', $hours, $minutes);
         };
 

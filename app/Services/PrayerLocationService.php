@@ -76,9 +76,23 @@ class PrayerLocationService
     /**
      * Hitung jadwal salat berikutnya berdasarkan waktu saat ini.
      */
-    public function determineNextPrayer(array $timings, ?string $currentTime = null): array
+    public function determineNextPrayer(array $timings, ?string $currentTime = null, float $timezoneOffset = 7.0): array
     {
-        $current = $currentTime ?: date('H:i');
+        if ($currentTime === null) {
+            $tzName = match ((int)$timezoneOffset) {
+                7 => 'Asia/Jakarta',
+                8 => 'Asia/Makassar',
+                9 => 'Asia/Jayapura',
+                default => 'Asia/Jakarta',
+            };
+            try {
+                $currentTime = now()->setTimezone($tzName)->format('H:i');
+            } catch (\Throwable $e) {
+                $currentTime = date('H:i');
+            }
+        }
+
+        $current = $currentTime;
         $prayerOrder = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
 
         foreach ($prayerOrder as $prayer) {

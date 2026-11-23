@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContributorVerification;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class VerificationController extends Controller
@@ -143,6 +146,60 @@ class VerificationController extends Controller
         }
 
         $message = "Pengajuan verifikasi '{$user->name}' telah ditolak dengan catatan evaluasi.";
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+            ]);
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Hapus akun pengguna / kontributor secara permanen oleh administrator.
+     */
+    public function destroyUser(Request $request, User $user): RedirectResponse|JsonResponse
+    {
+        abort_unless($request->user() && $request->user()->isAdmin(), 403, 'Akses khusus administrator.');
+
+        // Cegah admin menghapus akunnya sendiri
+        if ($request->user()->id === $user->id) {
+            $errMessage = 'Anda tidak dapat menghapus akun administrator Anda sendiri saat sedang aktif.';
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $errMessage], 422);
+            }
+            return redirect()->back()->with('error', $errMessage);
+        }
+
+        $userName = $user->name;
+
+        DB::transaction(function () use ($user) {
+            // Hapus file fisik dokumen verifikasi jika ada
+            foreach ($user->verifications as $verif) {
+                if ($verif->document_path && !str_starts_with($verif->document_path, 'http')) {
+                    Storage::disk('public')->delete($verif->document_path);
+                }
+            }
+
+            // Hapus file fisik karya foto kontributor jika ada
+            foreach ($user->artworks as $art) {
+                if ($art->image_path && !str_starts_with($art->image_path, 'http')) {
+                    Storage::disk('public')->delete($art->image_path);
+                }
+            }
+
+            // Hapus avatar jika ada
+            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Cascade delete relasi data di database
+            $user->delete();
+        });
+
+        $message = "Akun kontributor '{$userName}' beserta seluruh data terkait berhasil dihapus secara permanen.";
 
         if ($request->wantsJson()) {
             return response()->json([

@@ -77,6 +77,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/verifikasi', [VerificationController::class, 'index'])->name('verification.index');
     Route::post('/verifikasi/{verification}/approve', [VerificationController::class, 'approve'])->name('verification.approve');
     Route::post('/verifikasi/{verification}/reject', [VerificationController::class, 'reject'])->name('verification.reject');
+    Route::delete('/pengguna/{user}', [VerificationController::class, 'destroyUser'])->name('users.destroy');
 
     // Lihat Galeri Desktop Admin (Stitch)
     Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');

@@ -12,6 +12,17 @@
             </button>
         </div>
     @endif
+    @if (session('error'))
+        <div class="rounded-xl p-4 bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-red-600 text-lg">error</span>
+                <span>{{ session('error') }}</span>
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-900">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    @endif
 
     {{-- ================= 1. HEADER SECTION (Sesuai Stitch) ================= --}}
     <section class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-gray-200">
@@ -278,6 +289,8 @@
                                     hasBank: {{ $primaryBank ? 'true' : 'false' }},
                                     status: '{{ $verif->status }}',
                                     notes: '{{ addslashes($verif->admin_notes ?? '') }}',
+                                    userId: {{ $user ? $user->id : 0 }},
+                                    deleteUserUrl: '{{ $user ? route('admin.users.destroy', $user->id) : '#' }}',
                                     approveUrl: '{{ route('admin.verification.approve', $verif->id) }}',
                                     rejectUrl: '{{ route('admin.verification.reject', $verif->id) }}'
                                 })"
@@ -318,6 +331,16 @@
                                     <span>Verifikasi Ulang</span>
                                 </button>
                             </form>
+                        @endif
+
+                        {{-- Tombol Hapus Akun Kontributor --}}
+                        @if ($user && $user->id !== auth()->id())
+                            <button type="button"
+                                    onclick="openDeleteUserModal({{ $user->id }}, '{{ addslashes($userName) }}', '{{ route('admin.users.destroy', $user->id) }}')"
+                                    class="p-2 text-gray-400 hover:text-red-700 hover:bg-red-50 rounded-xl border border-transparent hover:border-red-200 transition-colors"
+                                    title="Hapus Akun Pengguna">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
                         @endif
                     </div>
                 </article>
@@ -432,9 +455,15 @@
 
             {{-- Modal Footer --}}
             <div class="p-4 border-t border-gray-200 bg-[#F9F9F6] flex flex-col sm:flex-row items-center justify-between gap-3">
-                <button type="button" onclick="closeVerificationModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold">
-                    Tutup Dialog
-                </button>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button type="button" onclick="closeVerificationModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold">
+                        Tutup Dialog
+                    </button>
+                    <button type="button" id="vm-btn-delete-user" class="w-full sm:w-auto px-3.5 py-2 rounded-xl text-red-600 hover:bg-red-50 border border-red-200 text-xs font-semibold flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-base">delete</span>
+                        <span>Hapus Akun</span>
+                    </button>
+                </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <button type="button" id="vm-btn-reject" class="w-full sm:w-auto px-3.5 py-2 rounded-xl text-red-600 hover:bg-red-50 border border-red-200 text-xs font-semibold flex items-center justify-center gap-1">
                         <span class="material-symbols-outlined text-base">close</span>
@@ -497,6 +526,44 @@
         </div>
     </div>
 
+    {{-- ================= 7. MODAL KONFIRMASI HAPUS AKUN PENGGUNA ================= --}}
+    <div id="deleteUserModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full border border-gray-200 shadow-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+                <h3 class="font-serif-heading text-base font-bold text-red-700 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-lg">warning</span>
+                    <span>Konfirmasi Hapus Akun</span>
+                </h3>
+                <button type="button" onclick="closeDeleteUserModal()" class="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500">
+                    <span class="material-symbols-outlined text-base">close</span>
+                </button>
+            </div>
+
+            <form id="delete-user-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <div class="space-y-3">
+                    <p class="text-xs text-gray-700 leading-relaxed">
+                        Apakah Anda yakin ingin menghapus akun pengguna <strong id="delete-user-name" class="text-gray-900"></strong> secara permanen?
+                    </p>
+                    <div class="p-3 bg-red-50 rounded-xl border border-red-200 text-[11px] text-red-700 space-y-1">
+                        <strong class="block font-bold">Peringatan:</strong>
+                        <p>Tindakan ini tidak dapat dibatalkan. Seluruh data karya foto, berkas dokumen identitas, dan rekening terkait akun ini akan dihapus secara permanen dari server.</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-200 flex justify-end gap-2">
+                    <button type="button" onclick="closeDeleteUserModal()" class="px-3.5 py-1.5 rounded-lg border border-gray-300 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-xs">
+                        Hapus Akun Permanen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- Script Modal Interaktif --}}
     <script>
         function openVerificationModal(data) {
@@ -541,6 +608,17 @@
                 openRejectModal(data.id, data.name);
             };
 
+            const btnDeleteUser = document.getElementById('vm-btn-delete-user');
+            if (data.userId && data.deleteUserUrl !== '#') {
+                btnDeleteUser.classList.remove('hidden');
+                btnDeleteUser.onclick = function() {
+                    closeVerificationModal();
+                    openDeleteUserModal(data.userId, data.name, data.deleteUserUrl);
+                };
+            } else {
+                btnDeleteUser.classList.add('hidden');
+            }
+
             document.getElementById('verification-modal').classList.remove('hidden');
             document.getElementById('verification-modal').classList.add('flex');
         }
@@ -570,10 +648,23 @@
             document.getElementById('rejectModal').classList.remove('flex');
         }
 
+        function openDeleteUserModal(userId, userName, deleteUrl) {
+            document.getElementById('delete-user-name').innerText = userName;
+            document.getElementById('delete-user-form').action = deleteUrl;
+            document.getElementById('deleteUserModal').classList.remove('hidden');
+            document.getElementById('deleteUserModal').classList.add('flex');
+        }
+
+        function closeDeleteUserModal() {
+            document.getElementById('deleteUserModal').classList.add('hidden');
+            document.getElementById('deleteUserModal').classList.remove('flex');
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeVerificationModal();
                 closeRejectModal();
+                closeDeleteUserModal();
             }
         });
     </script>

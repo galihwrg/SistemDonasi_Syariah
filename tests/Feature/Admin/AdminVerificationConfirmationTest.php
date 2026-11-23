@@ -179,4 +179,47 @@ class AdminVerificationConfirmationTest extends TestCase
         $response->assertSee('Santri 1');
         $response->assertDontSee('Warga 2');
     }
+
+    public function test_admin_can_delete_user_account_permanently(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $user = User::factory()->create(['role' => 'user', 'name' => 'Akun Dihapus']);
+
+        ContributorVerification::create([
+            'user_id' => $user->id,
+            'id_type' => 'ktm',
+            'id_number' => '123456',
+            'document_path' => 'verifications/test.jpg',
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.users.destroy', $user->id));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $this->assertDatabaseMissing('contributor_verifications', ['user_id' => $user->id]);
+    }
+
+    public function test_admin_cannot_delete_own_account(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->delete(route('admin.users.destroy', $admin->id));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('users', ['id' => $admin->id]);
+    }
+
+    public function test_regular_user_cannot_delete_any_account(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $otherUser = User::factory()->create(['role' => 'user']);
+
+        $response = $this->actingAs($user)->delete(route('admin.users.destroy', $otherUser->id));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('users', ['id' => $otherUser->id]);
+    }
 }

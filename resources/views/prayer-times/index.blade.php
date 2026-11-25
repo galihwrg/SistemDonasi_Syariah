@@ -237,8 +237,30 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
 
+                    // 1. Coba reverse geocode langsung dari client browser (BigDataCloud Client API - free & fast)
+                    let clientCity = '';
                     try {
-                        const response = await fetch(`/api/waktu-salat?lat=${lat}&lng=${lng}`);
+                        const geoClient = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`);
+                        if (geoClient.ok) {
+                            const geoData = await geoClient.json();
+                            const regency = geoData.locality || geoData.city || geoData.principalSubdivisionDistrict;
+                            const province = geoData.principalSubdivision;
+                            if (regency && province) {
+                                clientCity = `${regency}, ${province}`;
+                            } else if (regency) {
+                                clientCity = regency;
+                            }
+                        }
+                    } catch (e) {
+                        // ignore and let server resolve
+                    }
+
+                    try {
+                        const queryUrl = clientCity
+                            ? `/api/waktu-salat?lat=${lat}&lng=${lng}&city=${encodeURIComponent(clientCity)}`
+                            : `/api/waktu-salat?lat=${lat}&lng=${lng}`;
+
+                        const response = await fetch(queryUrl);
                         const result = await response.json();
 
                         if (result.status === 'success') {

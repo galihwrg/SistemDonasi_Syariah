@@ -178,29 +178,95 @@ class PrayerLocationService
 
     protected function resolveLocationName(float $latitude, float $longitude): string
     {
-        // Deteksi kota-kota besar di Indonesia berdasarkan bounding coordinates
+        // 1. Coba reverse geocoding via OpenStreetMap / BigDataCloud
+        try {
+            $geoResponse = Http::timeout(3)
+                ->withHeaders(['User-Agent' => 'KuantumPeloporDakwah/1.0 (contact@kuantumpelopor.id)'])
+                ->get('https://nominatim.openstreetmap.org/reverse', [
+                    'lat' => $latitude,
+                    'lon' => $longitude,
+                    'format' => 'json',
+                    'addressdetails' => 1,
+                    'zoom' => 10,
+                ]);
+
+            if ($geoResponse->successful()) {
+                $address = $geoResponse->json()['address'] ?? [];
+                $city = $address['city'] ?? $address['regency'] ?? $address['county'] ?? $address['municipality'] ?? null;
+                $state = $address['state'] ?? null;
+
+                if ($city && $state) {
+                    return sprintf('%s, %s', $city, $state);
+                } elseif ($city) {
+                    return $city;
+                } elseif ($state) {
+                    return $state;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Fallback ke lookup lokal kota/kabupaten
+        }
+
+        // 2. Deteksi kota & kabupaten berdasarkan bounding coordinates
+        // Bogor & sekitarnya (Kota/Kabupaten Bogor, Jawa Barat)
+        if (abs($latitude - (-6.5971)) < 0.35 && abs($longitude - 106.8060) < 0.35) {
+            return 'Kab. Bogor, Jawa Barat';
+        }
+        // Depok & Bekasi
+        if (abs($latitude - (-6.4025)) < 0.15 && abs($longitude - 106.7942) < 0.15) {
+            return 'Kota Depok, Jawa Barat';
+        }
+        if (abs($latitude - (-6.2383)) < 0.20 && abs($longitude - 106.9756) < 0.20) {
+            return 'Bekasi, Jawa Barat';
+        }
+        // Tangerang & Banten
+        if (abs($latitude - (-6.1783)) < 0.25 && abs($longitude - 106.6319) < 0.25) {
+            return 'Tangerang, Banten';
+        }
+        // Jakarta
         if (abs($latitude - (-6.2088)) < 0.25 && abs($longitude - 106.8456) < 0.25) {
             return 'Jakarta, DKI Jakarta';
         }
-        if (abs($latitude - (-6.9175)) < 0.25 && abs($longitude - 107.6191) < 0.25) {
+        // Bandung
+        if (abs($latitude - (-6.9175)) < 0.30 && abs($longitude - 107.6191) < 0.30) {
             return 'Bandung, Jawa Barat';
         }
+        // Surabaya
         if (abs($latitude - (-7.2575)) < 0.25 && abs($longitude - 112.7521) < 0.25) {
             return 'Surabaya, Jawa Timur';
         }
+        // Yogyakarta & Solo
         if (abs($latitude - (-7.7956)) < 0.25 && abs($longitude - 110.3695) < 0.25) {
             return 'Yogyakarta, D.I. Yogyakarta';
         }
+        if (abs($latitude - (-7.5755)) < 0.25 && abs($longitude - 110.8243) < 0.25) {
+            return 'Surakarta, Jawa Tengah';
+        }
+        // Semarang
         if (abs($latitude - (-6.9932)) < 0.25 && abs($longitude - 110.4203) < 0.25) {
             return 'Semarang, Jawa Tengah';
         }
+        // Malang
+        if (abs($latitude - (-7.9666)) < 0.25 && abs($longitude - 112.6326) < 0.25) {
+            return 'Malang, Jawa Timur';
+        }
+        // Medan
         if (abs($latitude - 3.5952) < 0.25 && abs($longitude - 98.6722) < 0.25) {
             return 'Medan, Sumatera Utara';
         }
+        // Makassar
         if (abs($latitude - (-5.1477)) < 0.25 && abs($longitude - 119.4327) < 0.25) {
             return 'Makassar, Sulawesi Selatan';
         }
 
-        return sprintf('Koordinat (%.3f, %.3f)', $latitude, $longitude);
+        // Estimasi Pulau/Wilayah jika koordinat di kepulauan Indonesia
+        if ($latitude >= -11.0 && $latitude <= 6.0 && $longitude >= 95.0 && $longitude <= 141.0) {
+            if ($longitude < 106.0) return 'Wilayah Jawa Barat / Banten';
+            if ($longitude < 111.0) return 'Wilayah Jawa Tengah / D.I.Y';
+            if ($longitude < 115.0) return 'Wilayah Jawa Timur / Madura';
+            return 'Wilayah Nusantara';
+        }
+
+        return 'Indonesia';
     }
 }

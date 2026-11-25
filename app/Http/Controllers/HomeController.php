@@ -26,7 +26,7 @@ class HomeController extends Controller
             ->get();
 
         $totalDonationAmount = Donation::where('payment_status', 'settlement')->sum('amount');
-        $totalDonorsCount = Donation::where('payment_status', 'settlement')->distinct('donor_email')->count('donor_email');
+        $totalDonorsCount = Donation::where('payment_status', 'settlement')->count();
 
         return view('home', compact('categories', 'artworks', 'totalDonationAmount', 'totalDonorsCount'));
     }

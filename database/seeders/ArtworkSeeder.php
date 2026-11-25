@@ -37,7 +37,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 890,
+                'download_count' => 0,
             ],
             [
                 'user_id' => $admin->id,
@@ -51,7 +51,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 1400,
+                'download_count' => 0,
             ],
             [
                 'user_id' => $mahasiswa->id,
@@ -65,7 +65,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 620,
+                'download_count' => 0,
             ],
             [
                 'user_id' => $admin->id,
@@ -79,7 +79,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 2300,
+                'download_count' => 0,
             ],
             [
                 'user_id' => $mahasiswa->id,
@@ -93,7 +93,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 745,
+                'download_count' => 0,
             ],
             [
                 'user_id' => $admin->id,
@@ -107,7 +107,7 @@ class ArtworkSeeder extends Seeder
                 'image_path' => 'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80',
                 'dimensions' => '3840 x 2160 px',
                 'status' => 'approved',
-                'download_count' => 512,
+                'download_count' => 0,
             ],
         ];
 

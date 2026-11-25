@@ -6,6 +6,7 @@ use App\Models\Artwork;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -182,8 +183,24 @@ class ArtworkController extends Controller
             return Storage::disk('public')->download($artwork->image_path, $artwork->slug . '.jpg');
         }
 
-        // Jika berupa URL eksternal (Unsplash/CDN), alihkan ke URL gambar
+        // Jika berupa URL eksternal (Unsplash/CDN), stream sebagai file download
         if (filter_var($artwork->image_path, FILTER_VALIDATE_URL)) {
+            try {
+                $response = Http::timeout(15)->get($artwork->image_path);
+                if ($response->successful()) {
+                    $contentType = $response->header('Content-Type') ?: 'image/jpeg';
+                    $filename = $artwork->slug . '.jpg';
+
+                    return response($response->body(), 200, [
+                        'Content-Type' => $contentType,
+                        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                        'Content-Length' => strlen($response->body()),
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // Fallback jika network eksternal gagal di-stream
+            }
+
             return redirect()->away($artwork->image_path);
         }
 

@@ -66,7 +66,7 @@
                         <div class="flex flex-col">
                             <span class="text-[9px] text-[#717975] uppercase tracking-wide font-medium">Terkumpul</span>
                             <span class="text-[12px] font-bold text-[#0f382c]">
-                                Rp {{ number_format($totalDonation > 0 ? $totalDonation : 2450000, 0, ',', '.') }}
+                                Rp {{ number_format($totalDonation, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                         <div class="flex flex-col">
                             <span class="text-[9px] text-[#717975] uppercase tracking-wide font-medium">Telah Diunduh</span>
                             <span class="text-[12px] font-bold text-[#0f382c]">
-                                {{ number_format($artwork->download_count > 0 ? $artwork->download_count : 1240, 0, ',', '.') }} Unduhan
+                                {{ number_format($artwork->download_count ?? 0, 0, ',', '.') }} Unduhan
                             </span>
                         </div>
                     </div>

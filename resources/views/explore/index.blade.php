@@ -40,7 +40,7 @@
                         <div class="w-1 h-1 rounded-full bg-white/40"></div>
                         <div class="flex items-baseline gap-1.5">
                             <span class="font-serif text-[15px] font-bold text-[#ffe088]">
-                                Rp {{ number_format($totalInfaqAmount > 0 ? $totalInfaqAmount : 12800000, 0, ',', '.') }}
+                                Rp {{ number_format($totalInfaqAmount, 0, ',', '.') }}
                             </span>
                             <span class="text-[10px] text-[#99d2bd]">Infaq Visual Terhimpun</span>
                         </div>
@@ -135,8 +135,8 @@
                             ? $art->image_path 
                             : asset('storage/' . $art->image_path);
                         $isSaved = auth()->check() && auth()->user()->savedArtworks->contains($art->id);
-                        $formattedDonation = 'Rp ' . number_format($art->total_donations > 0 ? $art->total_donations : 1250000, 0, ',', '.');
-                        $formattedDownloads = number_format($art->download_count > 0 ? $art->download_count : 630, 0, ',', '.') . ' Unduhan';
+                        $formattedDonation = 'Rp ' . number_format($art->total_donations ?? 0, 0, ',', '.');
+                        $formattedDownloads = number_format($art->download_count ?? 0, 0, ',', '.') . ' Unduhan';
                         $contributorName = $art->user->name ?? 'Kontributor Dakwah';
                         $categoryName = $art->category->name ?? 'Arsitektur';
                         $dimensions = $art->dimensions ?? '3840 x 2160 px';

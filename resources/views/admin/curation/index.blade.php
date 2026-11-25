@@ -230,7 +230,7 @@
                             <div class="flex flex-wrap items-center gap-2 pt-1">
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF3C7] text-[#92400E]">
                                     <span class="material-symbols-outlined text-[12px]">volunteer_activism</span>
-                                    <span>Donasi Terkumpul: Rp {{ number_format($artDonationSum > 0 ? $artDonationSum : 1250000, 0, ',', '.') }}</span>
+                                    <span>Donasi Terkumpul: Rp {{ number_format($artDonationSum, 0, ',', '.') }}</span>
                                 </span>
 
                                 @if ($uploaderBank)
@@ -311,7 +311,7 @@
                                     bankNumber: '{{ addslashes($uploaderBank->account_number ?? '-') }}',
                                     bankHolder: '{{ addslashes($uploaderBank->account_holder_name ?? '-') }}',
                                     hasBank: {{ $uploaderBank ? 'true' : 'false' }},
-                                    donations: 'Rp {{ number_format($artDonationSum > 0 ? $artDonationSum : 1250000, 0, ',', '.') }}',
+                                    donations: 'Rp {{ number_format($artDonationSum, 0, ',', '.') }}',
                                     status: '{{ $art->status }}'
                                 })"
                                 class="p-1.5 text-gray-400 hover:text-[#0F382C] rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"

@@ -297,7 +297,7 @@
                 <div class="flex items-center justify-between pb-3 border-b border-[#dadad7]/50">
                     <h3 class="text-sm font-bold text-[#0f382c] font-serif flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[18px]">account_balance</span>
-                        Rekening Bank Syariah
+                        Rekening Bank Penyaluran Donasi
                     </h3>
                     <button type="button" onclick="document.getElementById('modal-bank').classList.add('hidden')" class="w-7 h-7 rounded-full bg-[#f4f4f1] text-[#414845] hover:text-[#0f382c] flex items-center justify-center">
                         <span class="material-symbols-outlined text-[16px]">close</span>
@@ -307,13 +307,29 @@
                 <form method="POST" action="{{ route('profile.bank.store') }}" class="space-y-3">
                     @csrf
                     <div>
-                        <label class="block text-[11px] font-semibold text-[#414845] mb-1">Nama Bank Syariah</label>
-                        <select name="bank_name" class="w-full px-3 py-2 text-xs rounded-xl border border-[#dadad7] outline-none focus:border-[#0f382c]" required>
-                            <option value="Bank Syariah Indonesia (BSI)">Bank Syariah Indonesia (BSI)</option>
-                            <option value="Bank Muamalat">Bank Muamalat</option>
-                            <option value="BCA Syariah">BCA Syariah</option>
-                            <option value="Mega Syariah">Mega Syariah</option>
-                            <option value="Bank Jabar Banten Syariah (BJBS)">BJB Syariah</option>
+                        <label class="block text-[11px] font-semibold text-[#414845] mb-1">Nama Bank (Bebas Semua Bank)</label>
+                        <select name="bank_name" class="w-full px-3 py-2 text-xs rounded-xl border border-[#dadad7] outline-none focus:border-[#0f382c] bg-white" required>
+                            <option value="">-- Pilih Bank --</option>
+                            <optgroup label="Bank Nasional Umum">
+                                <option value="Bank Central Asia (BCA)">Bank Central Asia (BCA)</option>
+                                <option value="Bank Mandiri">Bank Mandiri</option>
+                                <option value="Bank Rakyat Indonesia (BRI)">Bank Rakyat Indonesia (BRI)</option>
+                                <option value="Bank Negara Indonesia (BNI)">Bank Negara Indonesia (BNI)</option>
+                                <option value="Bank CIMB Niaga">Bank CIMB Niaga</option>
+                                <option value="Bank Danamon">Bank Danamon</option>
+                                <option value="Bank Permata">Bank Permata</option>
+                                <option value="Bank Tabungan Negara (BTN)">Bank Tabungan Negara (BTN)</option>
+                                <option value="Bank BJB">Bank BJB</option>
+                                <option value="Bank Jatim">Bank Jatim</option>
+                                <option value="Bank Jateng">Bank Jateng</option>
+                            </optgroup>
+                            <optgroup label="Bank Syariah">
+                                <option value="Bank Syariah Indonesia (BSI)" selected>Bank Syariah Indonesia (BSI)</option>
+                                <option value="BCA Syariah">BCA Syariah</option>
+                                <option value="Bank Muamalat">Bank Muamalat</option>
+                                <option value="Mega Syariah">Mega Syariah</option>
+                                <option value="Bank Jabar Banten Syariah (BJBS)">BJB Syariah</option>
+                            </optgroup>
                         </select>
                     </div>
 

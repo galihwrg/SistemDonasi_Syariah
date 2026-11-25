@@ -93,9 +93,6 @@
                     $imgUrl = $art->image_url ?? (str_starts_with($art->image_path, 'http') ? $art->image_path : asset('storage/' . $art->image_path));
                     $initials = strtoupper(substr($art->user->name ?? 'KP', 0, 2));
                     $donationsSum = $art->donations()->where('payment_status', 'settlement')->sum('amount');
-                    if ($donationsSum <= 0) {
-                        $donationsSum = 1250000; // baseline infaq visual
-                    }
                     $contributorSub = $art->user->category === 'mahasiswa' ? 'Mahasiswa / Akademisi' : 'Kontributor Dakwah';
                 @endphp
                 <div class="group bg-white rounded-2xl overflow-hidden border border-[#C1C8C3]/30 shadow-xs flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-md">

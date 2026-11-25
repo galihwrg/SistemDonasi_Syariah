@@ -27,9 +27,6 @@ class GalleryController extends Controller
         // Metrik Ringkasan Banner
         $totalActiveArtworks = Artwork::where('status', 'approved')->count();
         $totalInfaqAmount = (int) Donation::where('payment_status', 'settlement')->sum('amount');
-        if ($totalInfaqAmount <= 0) {
-            $totalInfaqAmount = 12800000; // Mock baseline infaq visual jika belum ada transaksi riil
-        }
 
         $query = Artwork::with(['user', 'category'])
             ->where('status', 'approved');

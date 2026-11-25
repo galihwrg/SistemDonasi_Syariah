@@ -34,9 +34,9 @@ class CategorySeeder extends Seeder
                 'icon' => 'groups',
             ],
             [
-                'name' => 'Ramadhan',
-                'slug' => 'ramadhan',
-                'icon' => 'bedtime',
+                'name' => 'Ibadah',
+                'slug' => 'ibadah',
+                'icon' => 'mosque',
             ],
         ];
 

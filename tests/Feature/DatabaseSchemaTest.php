@@ -26,7 +26,7 @@ class DatabaseSchemaTest extends TestCase
         $this->assertDatabaseHas('categories', ['slug' => 'alam-tadabbur']);
         $this->assertDatabaseHas('categories', ['slug' => 'kaligrafi']);
         $this->assertDatabaseHas('categories', ['slug' => 'kegiatan-umat']);
-        $this->assertDatabaseHas('categories', ['slug' => 'ramadhan']);
+        $this->assertDatabaseHas('categories', ['slug' => 'ibadah']);
     }
 
     /**

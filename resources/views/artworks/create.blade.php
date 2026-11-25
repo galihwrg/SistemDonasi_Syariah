@@ -115,7 +115,7 @@
                                 'alam', 'alam-tadabbur' => 'nature',
                                 'kaligrafi' => 'draw',
                                 'kegiatan', 'kegiatan-umat' => 'groups',
-                                'ramadhan' => 'nights_stay',
+                                'ibadah', 'ramadhan' => 'mosque',
                                 default => 'photo_library',
                             };
                         @endphp

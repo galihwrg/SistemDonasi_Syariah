@@ -131,7 +131,7 @@
                     <div>
                         <span class="text-[11px] text-[#414845] block">Total Donasi Terkumpul</span>
                         <span class="text-[20px] font-semibold text-[#0f382c] block mt-0.5 font-serif">
-                            Rp {{ number_format($totalDonation > 0 ? $totalDonation : 450000, 0, ',', '.') }}
+                            Rp {{ number_format($totalDonation ?? 0, 0, ',', '.') }}
                         </span>
                     </div>
                     <div class="w-9 h-9 rounded-full bg-[#ffe088]/50 flex items-center justify-center text-[#735c00] border border-[#e9c349]/40">

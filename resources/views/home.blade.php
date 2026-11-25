@@ -39,8 +39,8 @@
                         <span class="text-[10.5px] font-medium tracking-normal text-[#c1ecda]">Total Donasi Terkumpul</span>
                     </div>
                     <div class="flex items-baseline justify-between">
-                        <span class="font-serif text-[22px] font-bold text-white tracking-tight">Rp 28.450.000</span>
-                        <span class="text-[11px] text-[#99d2bd]">640 Muhsinin Terlibat</span>
+                        <span class="font-serif text-[22px] font-bold text-white tracking-tight">Rp {{ number_format($totalDonationAmount ?? 0, 0, ',', '.') }}</span>
+                        <span class="text-[11px] text-[#99d2bd]">{{ number_format($totalDonorsCount ?? 0, 0, ',', '.') }} Muhsinin Terlibat</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-[10.5px] text-[#99d2bd] pt-0.5">
                         <span class="material-symbols-outlined text-[14px] text-[#ffe088]">verified</span>
@@ -150,7 +150,7 @@
                                 <div class="flex flex-col">
                                     <span class="flex items-center gap-1 font-bold text-[11px] text-[#0f382c]">
                                         <span class="material-symbols-outlined text-[12px] text-[#735c00]">volunteer_activism</span>
-                                        Rp {{ number_format($art->total_donations > 0 ? $art->total_donations : 1450000, 0, ',', '.') }}
+                                        Rp {{ number_format($art->total_donations ?? 0, 0, ',', '.') }}
                                     </span>
                                     <span class="text-[9px] font-medium text-[#717975] pl-4 leading-none">Donasi Terkumpul</span>
                                 </div>

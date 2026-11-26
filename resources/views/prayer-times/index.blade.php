@@ -53,13 +53,6 @@
                         <span id="display-next-label">{{ $nextPrayer['label'] }}</span>
                     </p>
                 </div>
-                <button type="button"
-                        onclick="togglePrayerAudioReminder()"
-                        id="btn-bell-reminder"
-                        class="w-9 h-9 rounded-full bg-[#f4f4f1] border border-[#e5e5e0] flex items-center justify-center text-[#0f382c] shrink-0 hover:bg-[#e2e3e0] transition-colors"
-                        title="Pengingat Salat">
-                    <span id="bell-reminder-icon" class="material-symbols-outlined text-[18px]">notifications_active</span>
-                </button>
             </div>
         </section>
 
@@ -356,21 +349,6 @@
             } else {
                 showLocationStatus('Kompas telah dikalibrasi sesuai arah Kiblat.', false);
                 setupCompassOrientation();
-            }
-        }
-
-        function togglePrayerAudioReminder() {
-            const icon = document.getElementById('bell-reminder-icon');
-            if (icon.innerText === 'notifications_active') {
-                icon.innerText = 'notifications_off';
-                if (typeof showAppToast === 'function') {
-                    showAppToast('Pengingat waktu salat dinonaktifkan.');
-                }
-            } else {
-                icon.innerText = 'notifications_active';
-                if (typeof showAppToast === 'function') {
-                    showAppToast('Pengingat waktu salat aktif untuk seluruh jadwal.');
-                }
             }
         }
 

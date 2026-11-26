@@ -9,6 +9,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrayerTimeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/karya/{artwork}', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
     Route::post('/profil/verifikasi', [ProfileController::class, 'submitVerification'])->name('profile.verify');
     Route::post('/profil/rekening', [ProfileController::class, 'storeBankAccount'])->name('profile.bank.store');
+    Route::patch('/notifikasi/{id}/baca', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifikasi/baca-semua', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::post('/keluar', [AuthController::class, 'logout'])->name('logout');
 });
 

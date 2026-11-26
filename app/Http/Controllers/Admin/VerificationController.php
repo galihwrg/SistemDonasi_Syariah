@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ContributorVerification;
 use App\Models\User;
+use App\Notifications\VerificationStatusNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -103,6 +104,9 @@ class VerificationController extends Controller
                 'nim_nik' => $verification->id_number,
                 'campus_name' => $verification->campus_name ?? $user->campus_name,
             ]);
+
+            // Kirim in-app notifikasi persetujuan
+            $user->notify(new VerificationStatusNotification($verification, 'approved', $notes));
         }
 
         $message = "Alhamdulillah! Akun '{$user->name}' berhasil diverifikasi dan fitur rekening penyaluran donasi kini aktif.";
@@ -143,6 +147,9 @@ class VerificationController extends Controller
             $user->update([
                 'is_verified' => false,
             ]);
+
+            // Kirim in-app notifikasi penolakan beserta catatan admin
+            $user->notify(new VerificationStatusNotification($verification, 'rejected', $validated['admin_notes']));
         }
 
         $message = "Pengajuan verifikasi '{$user->name}' telah ditolak dengan catatan evaluasi.";

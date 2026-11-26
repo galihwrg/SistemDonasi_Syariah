@@ -170,19 +170,58 @@
                         <p class="text-[11px] text-[#414845]">{{ $user->email }}</p>
                     </div>
                 </div>
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ffe088]/50 text-[#574500] text-[11px] font-semibold border border-[#e9c349]/40">
-                    <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
-                    {{ $latestVerification && $latestVerification->status === 'pending' ? 'Menunggu Review' : 'Belum Verifikasi' }}
-                </span>
+                @if ($latestVerification && $latestVerification->status === 'pending')
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ffe088]/50 text-[#574500] text-[11px] font-semibold border border-[#e9c349]/40">
+                        <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
+                        Menunggu Review
+                    </span>
+                @elseif ($latestVerification && $latestVerification->status === 'rejected')
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-800 text-[11px] font-semibold border border-red-300">
+                        <span class="material-symbols-outlined text-[13px]">cancel</span>
+                        Verifikasi Ditolak
+                    </span>
+                @else
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 text-[11px] font-semibold border border-gray-300">
+                        <span class="material-symbols-outlined text-[13px]">info</span>
+                        Belum Verifikasi
+                    </span>
+                @endif
             </div>
 
-            {{-- 2. Info Kunci Rekening Sederhana --}}
-            <div class="rounded-xl p-3 bg-gradient-to-br from-[#f4f4f1] to-[#fef8e7] border border-[#e9c349]/40 flex items-start gap-2.5">
-                <span class="material-symbols-outlined text-amber-900 text-[18px] shrink-0 mt-0.5">lock</span>
-                <p class="text-[12px] leading-relaxed text-[#1a1c1b]">
-                    Verifikasi identitas diperlukan untuk membuka fitur nomor rekening &amp; pencairan donasi dakwah.
-                </p>
-            </div>
+            @if ($latestVerification && $latestVerification->status === 'rejected')
+                {{-- Banner Penolakan dengan Catatan Evaluasi Admin --}}
+                <div class="rounded-xl p-3.5 bg-red-50 border border-red-200 text-red-900 space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-600 text-[18px]">error</span>
+                        <h3 class="text-xs font-bold">Pengajuan Verifikasi Sebelumnya Ditolak</h3>
+                    </div>
+                    <p class="text-[11px] leading-relaxed text-red-800">
+                        {{ $latestVerification->admin_notes ? $latestVerification->admin_notes : 'Dokumen yang Anda kirimkan tidak memenuhi kriteria keabsahan. Silakan periksa kembali dan unggah ulang dokumen yang sah.' }}
+                    </p>
+                    <p class="text-[10.5px] font-medium text-red-700 pt-0.5">
+                        Silakan perbaiki data di bawah dan unggah ulang dokumen KTM/KTP yang jelas.
+                    </p>
+                </div>
+            @elseif ($latestVerification && $latestVerification->status === 'pending')
+                {{-- Banner Menunggu Review --}}
+                <div class="rounded-xl p-3 bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-2.5 shadow-xs">
+                    <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">pending_actions</span>
+                    <div>
+                        <h3 class="text-xs font-bold leading-tight">Dokumen Sedang Ditinjau Admin</h3>
+                        <p class="text-[11px] leading-relaxed text-amber-800 mt-0.5">
+                            Pengajuan verifikasi KTM/KTP Anda telah kami terima dan sedang dalam antrean moderasi. Anda akan menerima notifikasi segera setelah admin selesai meninjau.
+                        </p>
+                    </div>
+                </div>
+            @else
+                {{-- 2. Info Kunci Rekening Sederhana --}}
+                <div class="rounded-xl p-3 bg-gradient-to-br from-[#f4f4f1] to-[#fef8e7] border border-[#e9c349]/40 flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-amber-900 text-[18px] shrink-0 mt-0.5">lock</span>
+                    <p class="text-[12px] leading-relaxed text-[#1a1c1b]">
+                        Verifikasi identitas diperlukan untuk membuka fitur nomor rekening &amp; pencairan donasi dakwah.
+                    </p>
+                </div>
+            @endif
 
             {{-- 3. Form Pilihan Kategori & Unggah Minimalis --}}
             <form method="POST" action="{{ route('profile.verify') }}" enctype="multipart/form-data" class="bg-white rounded-xl p-4 border border-[#c1c8c3]/30 shadow-xs space-y-3.5">

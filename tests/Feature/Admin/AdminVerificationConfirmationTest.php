@@ -95,6 +95,12 @@ class AdminVerificationConfirmationTest extends TestCase
         $user->refresh();
         $this->assertTrue($user->is_verified);
         $this->assertEquals('3201234567890001', $user->nim_nik);
+
+        // Pastikan notifikasi in-app database terkirim
+        $this->assertCount(1, $user->notifications);
+        $notif = $user->notifications->first();
+        $this->assertEquals('approved', $notif->data['status']);
+        $this->assertStringContainsString('Disetujui', $notif->data['title']);
     }
 
     public function test_admin_can_reject_contributor_verification_with_notes(): void
@@ -127,6 +133,13 @@ class AdminVerificationConfirmationTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->is_verified);
+
+        // Pastikan notifikasi penolakan in-app terkirim beserta catatannya
+        $this->assertCount(1, $user->notifications);
+        $notif = $user->notifications->first();
+        $this->assertEquals('rejected', $notif->data['status']);
+        $this->assertStringContainsString('Ditolak', $notif->data['title']);
+        $this->assertEquals('Foto KTM terlalu buram sehingga nomor identitas tidak dapat terbaca dengan jelas.', $notif->data['admin_notes']);
     }
 
     public function test_rejection_fails_if_admin_notes_are_missing(): void

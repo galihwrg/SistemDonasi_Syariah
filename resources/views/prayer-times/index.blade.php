@@ -199,47 +199,6 @@
                 </section>
             </div>
         </div>
-                @php
-                    $prayersList = [
-                        ['key' => 'Subuh', 'icon' => 'wb_twilight'],
-                        ['key' => 'Terbit', 'icon' => 'wb_sunny'],
-                        ['key' => 'Dzuhur', 'icon' => 'light_mode'],
-                        ['key' => 'Ashar', 'icon' => 'sunny'],
-                        ['key' => 'Maghrib', 'icon' => 'nights_stay'],
-                        ['key' => 'Isya', 'icon' => 'dark_mode'],
-                    ];
-                @endphp
-
-                @foreach ($prayersList as $item)
-                    @php
-                        $isNext = ($nextPrayer['name'] ?? '') === $item['key'];
-                        $timeValue = $prayerData['timings'][$item['key']] ?? '--:--';
-                    @endphp
-                    <div id="prayer-row-{{ strtolower($item['key']) }}"
-                         class="flex items-center justify-between py-2.5 px-2 transition-all {{ $isNext ? 'rounded-xl bg-[#f4f4f1] border-l-4 border-[#c59b27] border-y border-r border-[#e5e5e0] -mx-1 px-3 shadow-2xs font-semibold' : '' }}">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined {{ $isNext ? 'text-[#c59b27]' : 'text-[#535955]' }} text-[18px]">
-                                {{ $item['icon'] }}
-                            </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[13px] {{ $isNext ? 'font-bold text-[#0f382c]' : 'font-medium text-[#1c1b1f]' }}">
-                                    {{ $item['key'] }}
-                                </span>
-                                @if ($isNext)
-                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-[#c59b27]/15 text-[#735c00] font-bold">
-                                        Berikutnya
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <span id="time-val-{{ strtolower($item['key']) }}"
-                              class="font-serif text-[14px] {{ $isNext ? 'font-bold text-[#0f382c]' : 'font-semibold text-[#0f382c]' }}">
-                            {{ $timeValue }} {{ $prayerData['timezone'] === 'Zona WIB' ? 'WIB' : ($prayerData['timezone'] === 'Zona WITA' ? 'WITA' : 'WIT') }}
-                        </span>
-                    </div>
-                @endforeach
-            </div>
-        </section>
 
     </div>
 

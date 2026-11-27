@@ -1,61 +1,82 @@
 <x-layouts.app title="{{ $artwork->title }} — Kuantum Pelopor Indonesia" :hide-bottom-nav="true">
 
-    {{-- Main Container (Stitch 100% Mobile Canvas) --}}
-    <div class="px-4 py-4 flex flex-col gap-5 pb-24">
+    {{-- Main Container: Responsive Grid on Desktop (Foto di Kiri, Detail & Aksi di Kanan) --}}
+    <div class="px-4 md:px-8 py-5 pb-28 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {{-- Kolom Kiri: Foto Utama & Meta --}}
+            <div class="lg:col-span-7 space-y-4">
+                {{-- 1. Foto Card & Badges --}}
+                <div class="relative bg-white rounded-2xl p-2.5 shadow-xs border border-[#c1c8c3]/40 overflow-hidden">
+                    <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#eeeeeb]">
+                        @php
+                            $imgUrl = filter_var($artwork->image_path, FILTER_VALIDATE_URL) 
+                                ? $artwork->image_path 
+                                : asset('storage/' . $artwork->image_path);
+                        @endphp
+                        <img alt="{{ $artwork->title }}"
+                             class="w-full h-full object-cover rounded-xl transition-transform duration-300"
+                             id="main-photo"
+                             src="{{ $imgUrl }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+                        
+                        {{-- Top Badges --}}
+                        <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0f382c]/90 backdrop-blur-md text-white text-[10px] md:text-xs shadow-xs border border-[#c1ecda]/20 font-medium">
+                                <span class="material-symbols-outlined text-[13px]">hd</span>
+                                Ultra HD 4K
+                            </span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-md text-[#0f382c] text-[10px] md:text-xs shadow-xs border border-[#c1c8c3]/40 font-medium">
+                                <span class="material-symbols-outlined text-[#735c00] text-[13px]" style="font-variation-settings: 'FILL' 1;">mosque</span>
+                                {{ $artwork->category->name ?? 'Karya Dakwah' }}
+                            </span>
+                        </div>
+                    </div>
 
-        {{-- 1. Foto Card & Badges --}}
-        <div class="relative bg-white rounded-2xl p-2 shadow-xs border border-[#c1c8c3]/40 overflow-hidden">
-            <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#eeeeeb]">
-                @php
-                    $imgUrl = filter_var($artwork->image_path, FILTER_VALIDATE_URL) 
-                        ? $artwork->image_path 
-                        : asset('storage/' . $artwork->image_path);
-                @endphp
-                <img alt="{{ $artwork->title }}"
-                     class="w-full h-full object-cover rounded-xl transition-transform duration-300"
-                     id="main-photo"
-                     src="{{ $imgUrl }}">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none"></div>
-                
-                {{-- Top Badges --}}
-                <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0f382c]/90 backdrop-blur-md text-white text-[10px] shadow-xs border border-[#c1ecda]/20 font-medium">
-                        <span class="material-symbols-outlined text-[12px]">hd</span>
-                        Ultra HD 4K
-                    </span>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-md text-[#0f382c] text-[10px] shadow-xs border border-[#c1c8c3]/40 font-medium">
-                        <span class="material-symbols-outlined text-[#735c00] text-[12px]" style="font-variation-settings: 'FILL' 1;">mosque</span>
-                        {{ $artwork->category->name ?? 'Karya Dakwah' }}
-                    </span>
+                    {{-- Quick Meta under image --}}
+                    <div class="pt-3 px-2 flex items-center justify-between text-[#717975] text-xs font-medium">
+                        <span class="flex items-center gap-1.5 text-xs">
+                            <span class="material-symbols-outlined text-[15px] text-[#735c00]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                            Lisensi Bebas Wakaf
+                        </span>
+                        <div class="flex items-center gap-4">
+                            <span>{{ $artwork->dimensions ?? '3840 x 2160 px' }}</span>
+                            @php
+                                $isSaved = auth()->check() && auth()->user()->savedArtworks->contains($artwork->id);
+                            @endphp
+                            <button type="button"
+                                    onclick="toggleBookmark({{ $artwork->id }}, this)"
+                                    data-artwork-id="{{ $artwork->id }}"
+                                    data-saved="{{ $isSaved ? 'true' : 'false' }}"
+                                    class="bookmark-btn flex items-center gap-1 text-xs font-semibold {{ $isSaved ? 'text-[#735c00]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors"
+                                    title="Simpan ke Koleksi">
+                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' {{ $isSaved ? '1' : '0' }};">bookmark</span>
+                                <span>{{ $isSaved ? 'Tersimpan' : 'Simpan' }}</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            {{-- Quick Meta under image --}}
-            <div class="pt-2 px-1 flex items-center justify-between text-[#717975] text-[11px] font-medium">
-                <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[13px] text-[#735c00]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                    Lisensi Bebas Wakaf
-                </span>
-                <div class="flex items-center gap-3">
-                    <span>{{ $artwork->dimensions ?? '3840 x 2160 px' }}</span>
-                    @php
-                        $isSaved = auth()->check() && auth()->user()->savedArtworks->contains($artwork->id);
-                    @endphp
+                {{-- Action Buttons on Desktop (Di bawah foto) --}}
+                <div class="hidden lg:flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#c1c8c3]/40 shadow-xs">
+                    <a href="{{ route('artworks.download', $artwork->slug) }}"
+                       class="px-5 py-3 rounded-xl border border-[#c1c8c3]/60 flex items-center gap-2 text-[#0f382c] bg-white hover:bg-[#f4f4f1] active:scale-95 transition-all text-xs font-bold shadow-xs"
+                       title="Unduh Resolusi Asli">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        <span>Unduh Resolusi Asli</span>
+                    </a>
                     <button type="button"
-                            onclick="toggleBookmark({{ $artwork->id }}, this)"
-                            data-artwork-id="{{ $artwork->id }}"
-                            data-saved="{{ $isSaved ? 'true' : 'false' }}"
-                            class="bookmark-btn flex items-center gap-1 text-[11px] font-semibold {{ $isSaved ? 'text-[#735c00]' : 'text-[#717975] hover:text-[#0f382c]' }} transition-colors"
-                            title="Simpan ke Koleksi">
-                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' {{ $isSaved ? '1' : '0' }};">bookmark</span>
-                        <span>{{ $isSaved ? 'Tersimpan' : 'Simpan' }}</span>
+                            onclick="openDonationModal()"
+                            class="flex-1 py-3 px-4 rounded-xl bg-[#0f382c] hover:bg-[#1a5c44] text-white text-xs font-bold active:scale-98 transition-all flex items-center justify-center gap-2 shadow-sm border border-[#ffe088]/30">
+                        <span class="material-symbols-outlined text-lg text-[#fed65b]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+                        <span>Beri Donasi & Infaq Dakwah</span>
                     </button>
                 </div>
             </div>
-        </div>
 
-        {{-- 2. Title & Kontributor Header Card --}}
-        <article class="bg-white rounded-2xl p-4 shadow-xs border border-[#c1c8c3]/40 flex flex-col gap-4">
+            {{-- Kolom Kanan: Detail & Deskripsi Karya --}}
+            <div class="lg:col-span-5 space-y-4">
+                {{-- 2. Title & Kontributor Header Card --}}
+                <article class="bg-white rounded-2xl p-5 shadow-xs border border-[#c1c8c3]/40 flex flex-col gap-4">
             {{-- Metrics Banner --}}
             <div class="border-b border-[#c1c8c3]/20 pb-3 flex flex-col gap-2">
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#f4f4f1] border border-[#c1c8c3]/30 mb-1">
@@ -151,21 +172,22 @@
             @endif
         </article>
 
-        {{-- Navigasi Balik --}}
-        <div class="flex items-center justify-between px-1">
-            <a href="{{ route('jelajah') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-[#0f382c] hover:underline">
-                <span class="material-symbols-outlined text-sm">arrow_back</span>
-                Kembali ke Galeri Jelajah
-            </a>
-            <a href="{{ route('home') }}" class="text-xs text-[#717975] hover:text-[#0f382c]">
-                Ke Beranda
-            </a>
+                {{-- Navigasi Balik --}}
+                <div class="flex items-center justify-between px-1 pt-2">
+                    <a href="{{ route('jelajah') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-[#0f382c] hover:underline">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span>
+                        Kembali ke Galeri Jelajah
+                    </a>
+                    <a href="{{ route('home') }}" class="text-xs text-[#717975] hover:text-[#0f382c]">
+                        Ke Beranda
+                    </a>
+                </div>
+            </div>
         </div>
-
     </div>
 
-    {{-- Sticky Floating Mobile Bottom Bar --}}
-    <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full z-50 bg-[#f9f9f6] border-t border-[#dadad7] shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-4 pt-2.5 pb-3 flex flex-col">
+    {{-- Sticky Floating Bottom Bar (Hanya tampil di mobile < lg) --}}
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full z-50 bg-[#f9f9f6] border-t border-[#dadad7] shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-4 pt-2.5 pb-3 flex flex-col">
         <div class="flex items-center gap-2.5 w-full">
             {{-- Tombol Unduh 1-Klik --}}
             <a href="{{ route('artworks.download', $artwork->slug) }}"

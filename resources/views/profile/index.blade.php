@@ -1,6 +1,6 @@
 <x-layouts.app title="Verifikasi Akun & Rekening — Kuantum Pelopor Indonesia">
 
-    <div class="px-4 py-4 space-y-4">
+    <div class="px-4 md:px-8 py-5 space-y-5 max-w-4xl mx-auto">
 
         {{-- Flash Messages --}}
         @if (session('success'))

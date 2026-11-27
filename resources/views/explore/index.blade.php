@@ -1,49 +1,52 @@
 <x-layouts.app title="Jelajah Karya Dakwah — Kuantum Pelopor Indonesia">
 
-    <div class="space-y-4 pb-6">
+    <div class="space-y-4 pb-6 md:px-4 lg:px-6">
 
         {{-- ================= BANNER INFO & KURASI DAKWAH UMAT ================= --}}
         <section class="px-4 pt-3">
-            <div class="relative overflow-hidden bg-gradient-to-br from-[#0f382c] via-[#144839] to-[#0a2920] text-white rounded-3xl p-5 shadow-md border border-[#00392b]">
+            <div class="relative overflow-hidden bg-gradient-to-br from-[#0f382c] via-[#144839] to-[#0a2920] text-white rounded-3xl p-5 md:p-8 shadow-md border border-[#00392b]">
                 {{-- Decorative light glow --}}
-                <div class="absolute -right-8 -bottom-8 w-36 h-36 rounded-full bg-[#3f6658]/30 blur-2xl pointer-events-none"></div>
-                <div class="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-[#fed65b]/10 blur-xl pointer-events-none"></div>
+                <div class="absolute -right-8 -bottom-8 w-56 h-56 rounded-full bg-[#3f6658]/30 blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-6 -top-6 w-36 h-36 rounded-full bg-[#fed65b]/10 blur-xl pointer-events-none"></div>
 
-                <div class="relative z-10 space-y-3">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[#ffe088] text-[10px] font-bold tracking-wide">
-                            <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            Galeri Publik &amp; Kurasi Dakwah Umat
-                        </span>
-                        <a href="{{ route('unggah') }}"
-                           class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#fed65b] hover:bg-[#ffe088] text-[#0f382c] text-[11px] font-bold shadow-xs active:scale-95 transition-all shrink-0">
-                            <span class="material-symbols-outlined text-[14px]">add</span>
-                            <span>Unggah Karya</span>
-                        </a>
-                    </div>
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                    <div class="space-y-2.5 max-w-2xl">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[#ffe088] text-[10px] md:text-xs font-bold tracking-wide">
+                                <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                Galeri Publik &amp; Kurasi Dakwah Umat
+                            </span>
+                        </div>
 
-                    <div>
-                        <h1 class="font-serif text-[20px] font-bold text-white tracking-tight leading-tight">
+                        <h1 class="font-serif text-[20px] md:text-[28px] lg:text-[32px] font-bold text-white tracking-tight leading-tight">
                             Galeri Karya &amp; Foto Umat
                         </h1>
-                        <p class="text-[12px] text-[#c1ecda] leading-relaxed mt-1">
+                        <p class="text-[12px] md:text-sm text-[#c1ecda] leading-relaxed">
                             Dokumentasi visual dakwah, arsitektur masjid nusantara, kaligrafi, dan karya umat beriman yang lolos kurasi syariah.
                         </p>
                     </div>
 
-                    {{-- Metrics pill --}}
-                    <div class="flex items-center gap-4 pt-2 border-t border-white/15 text-xs">
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-serif text-[15px] font-bold text-white">{{ $totalActiveArtworks }}</span>
-                            <span class="text-[10px] text-[#99d2bd]">Karya Aktif</span>
+                    {{-- Metrics pill & button --}}
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2 border-t lg:border-t-0 border-white/15 text-xs">
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="font-serif text-[16px] md:text-xl font-bold text-white">{{ $totalActiveArtworks }}</span>
+                                <span class="text-[10px] md:text-xs text-[#99d2bd]">Karya Aktif</span>
+                            </div>
+                            <div class="w-1 h-1 rounded-full bg-white/40"></div>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="font-serif text-[16px] md:text-xl font-bold text-[#ffe088]">
+                                    Rp {{ number_format($totalInfaqAmount, 0, ',', '.') }}
+                                </span>
+                                <span class="text-[10px] md:text-xs text-[#99d2bd]">Infaq Visual Terhimpun</span>
+                            </div>
                         </div>
-                        <div class="w-1 h-1 rounded-full bg-white/40"></div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-serif text-[15px] font-bold text-[#ffe088]">
-                                Rp {{ number_format($totalInfaqAmount, 0, ',', '.') }}
-                            </span>
-                            <span class="text-[10px] text-[#99d2bd]">Infaq Visual Terhimpun</span>
-                        </div>
+
+                        <a href="{{ route('unggah') }}"
+                           class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#fed65b] hover:bg-[#ffe088] text-[#0f382c] text-xs font-bold shadow-xs active:scale-95 transition-all shrink-0">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            <span>Unggah Karya</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -126,9 +129,9 @@
             </form>
         </section>
 
-        {{-- ================= 2-COLUMN ARTWORK GRID (SAMA DENGAN HOME) ================= --}}
+        {{-- ================= RESPONSIVE ARTWORK GRID (2 Col Mobile, 3-4 Col Desktop) ================= --}}
         <section class="px-4">
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
                 @forelse ($artworks as $art)
                     @php
                         $artImg = filter_var($art->image_path, FILTER_VALIDATE_URL) 

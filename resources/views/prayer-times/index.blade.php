@@ -1,153 +1,204 @@
 <x-layouts.app title="Waktu Salat & Arah Kiblat — Kuantum Pelopor Indonesia">
 
-    <div class="px-4 py-3 space-y-3.5 pb-8" id="prayer-qibla-container">
+    <div class="px-4 md:px-8 py-5 space-y-5 pb-12" id="prayer-qibla-container">
 
         {{-- Sub-info Lokasi, Refresh Button & Tanggal Hijriyah --}}
-        <div class="bg-white rounded-2xl px-4 py-3 border border-[#e5e5e0] shadow-2xs flex items-center justify-between text-[11px] text-[#535955]">
-            <div class="flex items-center gap-1.5 font-medium truncate max-w-[200px]">
-                <span class="material-symbols-outlined text-[#c59b27] text-[16px] shrink-0">location_on</span>
-                <span id="display-location" class="truncate font-semibold text-[#0f382c]">{{ $prayerData['location'] }}</span>
+        <div class="bg-white rounded-2xl px-5 py-3.5 border border-[#e5e5e0] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#535955]">
+            <div class="flex items-center gap-2 font-medium">
+                <span class="material-symbols-outlined text-[#c59b27] text-[18px] shrink-0">location_on</span>
+                <span class="text-gray-500">Lokasi:</span>
+                <span id="display-location" class="font-bold text-[#0f382c]">{{ $prayerData['location'] }}</span>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-                <span id="display-hijri" class="font-medium text-[#735c00] bg-[#c59b27]/10 px-2.5 py-0.5 rounded-full">
+            <div class="flex items-center gap-3 self-end sm:self-auto">
+                <span id="display-hijri" class="font-semibold text-[#735c00] bg-[#c59b27]/10 px-3 py-1 rounded-full text-xs">
                     {{ $prayerData['hijri_date'] }}
                 </span>
                 <button type="button"
                         id="btn-detect-location"
                         onclick="detectUserLocation()"
                         title="Deteksi Lokasi GPS Anda"
-                        class="w-7 h-7 rounded-xl bg-[#f4f4f1] border border-[#e5e5e0] hover:bg-[#e2e3e0] text-[#0f382c] flex items-center justify-center transition-all active:scale-95 shadow-2xs">
+                        class="px-2.5 py-1 rounded-xl bg-[#f4f4f1] border border-[#e5e5e0] hover:bg-[#e2e3e0] text-[#0f382c] flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs text-xs font-medium">
                     <span id="location-refresh-icon" class="material-symbols-outlined text-[15px]">my_location</span>
+                    <span class="hidden sm:inline">Perbarui Lokasi</span>
                 </button>
             </div>
         </div>
 
         {{-- Alert Notifikasi Status GPS / Izin Geolocation --}}
-        <div id="location-status-badge" class="hidden px-3.5 py-2 rounded-xl text-[11px] font-medium items-center justify-between transition-all">
+        <div id="location-status-badge" class="hidden px-4 py-2.5 rounded-xl text-xs font-medium items-center justify-between transition-all">
             <span id="location-status-text">Mendeteksi lokasi GPS...</span>
-            <span class="material-symbols-outlined text-[14px]">info</span>
+            <span class="material-symbols-outlined text-[15px]">info</span>
         </div>
 
-        {{-- 1. Card Ringkas: Waktu Salat Berikutnya (Stitch 100%) --}}
-        <section class="rounded-2xl bg-white p-4 border border-[#e5e5e0] shadow-xs">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-[#c59b27] animate-pulse"></span>
-                    <span class="text-[11px] font-semibold tracking-wider uppercase text-[#535955]">
-                        Waktu Salat Berikutnya
-                    </span>
-                </div>
-                <span id="display-timezone" class="text-[11px] font-medium text-[#735c00]">
-                    {{ $prayerData['timezone'] }}
-                </span>
-            </div>
-
-            <div class="mt-2.5 flex items-center justify-between">
-                <div>
-                    <h2 class="font-serif text-[22px] font-bold text-[#0f382c] leading-tight">
-                        <span id="display-next-name">{{ $nextPrayer['name'] }}</span>
-                        <span class="font-normal text-[16px] text-[#535955]"> — <span id="display-next-time">{{ $nextPrayer['time'] }} {{ $prayerData['timezone'] === 'Zona WIB' ? 'WIB' : ($prayerData['timezone'] === 'Zona WITA' ? 'WITA' : 'WIT') }}</span></span>
-                    </h2>
-                    <p class="text-[12px] text-[#735c00] font-medium mt-0.5 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">schedule</span>
-                        <span id="display-next-label">{{ $nextPrayer['label'] }}</span>
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        {{-- 2. Kompas / Indikator Arah Kiblat Interaktif --}}
-        <section class="bg-white rounded-2xl p-4 border border-[#e5e5e0] shadow-sm">
-            <div class="flex items-center justify-between pb-3 border-b border-[#e5e5e0]">
-                <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#c59b27]">Panduan Ibadah Presisi</span>
-                    <h3 class="font-serif text-[15px] font-bold text-[#0f382c] mt-0.5">Arah Kiblat</h3>
-                </div>
-                <div class="text-right">
-                    <span id="display-qibla-degree" class="inline-block px-2.5 py-0.5 rounded-lg bg-[#f4f4f1] border border-[#e5e5e0] text-[#0f382c] font-serif font-bold text-[15px]">
-                        {{ $prayerData['qibla']['degree'] }}°
-                    </span>
-                    <div id="display-qibla-label" class="text-[11px] font-semibold text-[#735c00] mt-0.5">
-                        {{ $prayerData['qibla']['direction_label'] }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 flex items-center justify-center gap-4 py-1">
-                {{-- Visual Kompas Interaktif dengan Jarum & Ka'bah Marker --}}
-                <div class="relative w-28 h-28 rounded-full border-2 border-[#e5e5e0] bg-gradient-to-b from-[#f9f9f6] to-[#ecece9] flex items-center justify-center shrink-0 shadow-md">
-                    {{-- Mata Angin --}}
-                    <span class="absolute top-1 text-[10px] font-bold text-[#ba1a1a]">U</span>
-                    <span class="absolute bottom-1 text-[9px] font-semibold text-[#717975]">S</span>
-                    <span class="absolute right-1.5 text-[9px] font-semibold text-[#717975]">T</span>
-                    <span class="absolute left-1.5 text-[9px] font-semibold text-[#717975]">B</span>
-
-                    {{-- Kompas Dial Berputar Sesuai Heading Device / Sensor --}}
-                    <div id="compass-dial"
-                         class="w-20 h-20 rounded-full border border-dashed border-[#c1c8c3] bg-white flex items-center justify-center relative transition-transform duration-300 ease-out"
-                         style="transform: rotate(0deg);">
-                        
-                        {{-- Ka'bah Marker --}}
-                        <div id="kaaba-marker"
-                             class="absolute w-4 h-4 bg-[#0f382c] rounded-[3px] border border-[#c59b27] flex items-center justify-center shadow-xs"
-                             style="top: 2px; left: 6px;"
-                             title="Arah Ka'bah Makkah">
-                            <span class="w-2 h-0.5 bg-[#fed65b] block"></span>
+        {{-- Grid 2 Kolom di Desktop (Kiri: Waktu Salat & Arah Kiblat, Kanan: Jadwal 5 Waktu Salat) --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+            <div class="space-y-4">
+                {{-- 1. Card Ringkas: Waktu Salat Berikutnya (Stitch 100%) --}}
+                <section class="rounded-2xl bg-white p-5 border border-[#e5e5e0] shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#c59b27] animate-pulse"></span>
+                            <span class="text-xs font-semibold tracking-wider uppercase text-[#535955]">
+                                Waktu Salat Berikutnya
+                            </span>
                         </div>
+                        <span id="display-timezone" class="text-xs font-semibold text-[#735c00] bg-amber-50 px-2 py-0.5 rounded-md">
+                            {{ $prayerData['timezone'] }}
+                        </span>
+                    </div>
 
-                        {{-- Jarum Penunjuk Emas Presisi Menghadap Sudut Kiblat --}}
-                        <div id="qibla-needle"
-                             class="w-14 h-14 flex items-center justify-center transition-transform duration-500 ease-out"
-                             style="transform: rotate({{ $prayerData['qibla']['degree'] - 360 }}deg);">
-                            <div class="w-1 h-9 bg-gradient-to-t from-transparent via-[#c59b27] to-[#fed65b] rounded-full relative flex justify-center">
-                                <div class="w-2.5 h-2.5 rounded-full bg-[#c59b27] border border-white absolute top-0 -mt-0.5 shadow-sm"></div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div>
+                            <h2 class="font-serif text-[26px] md:text-[30px] font-bold text-[#0f382c] leading-tight">
+                                <span id="display-next-name">{{ $nextPrayer['name'] }}</span>
+                                <span class="font-normal text-lg md:text-xl text-[#535955]"> — <span id="display-next-time">{{ $nextPrayer['time'] }} {{ $prayerData['timezone'] === 'Zona WIB' ? 'WIB' : ($prayerData['timezone'] === 'Zona WITA' ? 'WITA' : 'WIT') }}</span></span>
+                            </h2>
+                            <p class="text-xs md:text-sm text-[#735c00] font-medium mt-1 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">schedule</span>
+                                <span id="display-next-label">{{ $nextPrayer['label'] }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {{-- 2. Kompas / Indikator Arah Kiblat Interaktif --}}
+                <section class="bg-white rounded-2xl p-5 border border-[#e5e5e0] shadow-sm">
+                    <div class="flex items-center justify-between pb-3 border-b border-[#e5e5e0]">
+                        <div>
+                            <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-[#c59b27]">Panduan Ibadah Presisi</span>
+                            <h3 class="font-serif text-base md:text-lg font-bold text-[#0f382c] mt-0.5">Arah Kiblat</h3>
+                        </div>
+                        <div class="text-right">
+                            <span id="display-qibla-degree" class="inline-block px-3 py-1 rounded-lg bg-[#f4f4f1] border border-[#e5e5e0] text-[#0f382c] font-serif font-bold text-base md:text-lg">
+                                {{ $prayerData['qibla']['degree'] }}°
+                            </span>
+                            <div id="display-qibla-label" class="text-xs font-semibold text-[#735c00] mt-0.5">
+                                {{ $prayerData['qibla']['direction_label'] }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex items-center justify-center gap-6 py-2">
+                        {{-- Visual Kompas Interaktif dengan Jarum & Ka'bah Marker --}}
+                        <div class="relative w-32 h-32 rounded-full border-2 border-[#e5e5e0] bg-gradient-to-b from-[#f9f9f6] to-[#ecece9] flex items-center justify-center shrink-0 shadow-md">
+                            {{-- Mata Angin --}}
+                            <span class="absolute top-1.5 text-[10px] font-bold text-[#ba1a1a]">U</span>
+                            <span class="absolute bottom-1.5 text-[9px] font-semibold text-[#717975]">S</span>
+                            <span class="absolute right-2 text-[9px] font-semibold text-[#717975]">T</span>
+                            <span class="absolute left-2 text-[9px] font-semibold text-[#717975]">B</span>
+
+                            {{-- Kompas Dial Berputar Sesuai Heading Device / Sensor --}}
+                            <div id="compass-dial"
+                                 class="w-24 h-24 rounded-full border border-dashed border-[#c1c8c3] bg-white flex items-center justify-center relative transition-transform duration-300 ease-out"
+                                 style="transform: rotate(0deg);">
+                                
+                                {{-- Ka'bah Marker --}}
+                                <div id="kaaba-marker"
+                                     class="absolute w-4 h-4 bg-[#0f382c] rounded-[3px] border border-[#c59b27] flex items-center justify-center shadow-xs"
+                                     style="top: 2px; left: 8px;"
+                                     title="Arah Ka'bah Makkah">
+                                    <span class="w-2 h-0.5 bg-[#fed65b] block"></span>
+                                </div>
+
+                                {{-- Jarum Penunjuk Emas Presisi Menghadap Sudut Kiblat --}}
+                                <div id="qibla-needle"
+                                     class="w-16 h-16 flex items-center justify-center transition-transform duration-500 ease-out"
+                                     style="transform: rotate({{ $prayerData['qibla']['degree'] - 360 }}deg);">
+                                    <div class="w-1 h-11 bg-gradient-to-t from-transparent via-[#c59b27] to-[#fed65b] rounded-full relative flex justify-center">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-[#c59b27] border border-white absolute top-0 -mt-0.5 shadow-sm"></div>
+                                    </div>
+                                </div>
+
+                                {{-- Pusat Poros Kompas --}}
+                                <div class="w-3.5 h-3.5 rounded-full bg-[#0f382c] border-2 border-white absolute shadow-xs z-10"></div>
                             </div>
                         </div>
 
-                        {{-- Pusat Poros Kompas --}}
-                        <div class="w-3 h-3 rounded-full bg-[#0f382c] border-2 border-white absolute shadow-xs z-10"></div>
+                        {{-- Panduan Arah --}}
+                        <div class="flex-1 pl-2">
+                            <div class="text-sm font-bold text-[#0f382c]">Menghadap Ka'bah</div>
+                            <p class="text-xs text-[#535955] mt-1.5 leading-relaxed">
+                                Posisikan layar atau ponsel mendatar. Sejajarkan jarum emas menuju Ka'bah untuk menghadap Kiblat dengan presisi.
+                            </p>
+                            <div class="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[#735c00]">
+                                <span class="material-symbols-outlined text-[16px] text-[#c59b27]">explore</span>
+                                <span id="display-qibla-subtext">{{ $prayerData['qibla']['degree'] }}° dari lokasi Anda</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                {{-- Panduan Arah --}}
-                <div class="flex-1 pl-1">
-                    <div class="text-[13px] font-bold text-[#0f382c]">Menghadap Ka'bah</div>
-                    <p class="text-[11px] text-[#535955] mt-1 leading-relaxed">
-                        Posisikan ponsel mendatar. Sejajarkan jarum emas menuju simbol Ka'bah untuk menghadap Kiblat dengan sempurna.
-                    </p>
-                    <div class="mt-2.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#735c00]">
-                        <span class="material-symbols-outlined text-[14px] text-[#c59b27]">explore</span>
-                        <span id="display-qibla-subtext">{{ $prayerData['qibla']['degree'] }}° dari lokasi Anda</span>
+                    {{-- Sensor Status Mini Pill --}}
+                    <div class="mt-4 pt-3 border-t border-[#f0f0ed] flex items-center justify-between text-xs text-[#717975]">
+                        <span id="sensor-status-label" class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Mode Geolocation Presisi
+                        </span>
+                        <button type="button"
+                                onclick="calibrateCompass()"
+                                class="text-[#0f382c] font-semibold hover:underline flex items-center gap-1">
+                            <span>Kalibrasi Sensor</span>
+                            <span class="material-symbols-outlined text-[14px]">refresh</span>
+                        </button>
                     </div>
-                </div>
+                </section>
             </div>
 
-            {{-- Sensor Status Mini Pill --}}
-            <div class="mt-3 pt-2.5 border-t border-[#f0f0ed] flex items-center justify-between text-[10.5px] text-[#717975]">
-                <span id="sensor-status-label" class="flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Mode Geolocation Presisi
-                </span>
-                <button type="button"
-                        onclick="calibrateCompass()"
-                        class="text-[#0f382c] font-semibold hover:underline flex items-center gap-0.5">
-                    <span>Kalibrasi Sensor</span>
-                    <span class="material-symbols-outlined text-[13px]">refresh</span>
-                </button>
-            </div>
-        </section>
+            {{-- Kolom Kanan di Desktop: Jadwal 5 Waktu Salat --}}
+            <div>
+                {{-- 3. Jadwal 5 Waktu Salat Polos & Presisi --}}
+                <section class="bg-white rounded-2xl p-5 border border-[#e5e5e0] shadow-sm">
+                    <div class="flex items-center justify-between pb-3 border-b border-[#e5e5e0]">
+                        <div>
+                            <h3 class="font-serif text-base md:text-lg font-bold text-[#0f382c]">Jadwal 5 Waktu Salat</h3>
+                            <p class="text-xs text-[#535955]">Berdasarkan hisab akurat Kemenag RI / MABIMS</p>
+                        </div>
+                        <span class="material-symbols-outlined text-[#717975] text-[20px]">calendar_today</span>
+                    </div>
 
-        {{-- 3. Jadwal 5 Waktu Salat Polos & Presisi --}}
-        <section class="bg-white rounded-2xl p-4 border border-[#e5e5e0] shadow-sm">
-            <div class="flex items-center justify-between pb-2.5 border-b border-[#e5e5e0]">
-                <div>
-                    <h3 class="font-serif text-[15px] font-bold text-[#0f382c]">Jadwal 5 Waktu Salat</h3>
-                    <p class="text-[11px] text-[#535955]">Berdasarkan hisab akurat Kemenag RI / MABIMS</p>
-                </div>
-                <span class="material-symbols-outlined text-[#717975] text-[18px]">calendar_today</span>
-            </div>
+                    <div class="divide-y divide-[#f0f0ed] mt-1 text-[#1c1b1f]">
+                        @php
+                            $prayersList = [
+                                ['key' => 'Subuh', 'icon' => 'wb_twilight'],
+                                ['key' => 'Terbit', 'icon' => 'wb_sunny'],
+                                ['key' => 'Dzuhur', 'icon' => 'light_mode'],
+                                ['key' => 'Ashar', 'icon' => 'sunny'],
+                                ['key' => 'Maghrib', 'icon' => 'nights_stay'],
+                                ['key' => 'Isya', 'icon' => 'dark_mode'],
+                            ];
+                        @endphp
 
-            <div class="divide-y divide-[#f0f0ed] mt-1 text-[#1c1b1f]">
+                        @foreach ($prayersList as $item)
+                            @php
+                                $isNext = ($nextPrayer['name'] ?? '') === $item['key'];
+                                $timeValue = $prayerData['timings'][$item['key']] ?? '--:--';
+                                $tzSuffix = $prayerData['timezone'] === 'Zona WIB' ? 'WIB' : ($prayerData['timezone'] === 'Zona WITA' ? 'WITA' : 'WIT');
+                            @endphp
+                            <div class="flex items-center justify-between py-3.5 px-3 rounded-xl transition-colors {{ $isNext ? 'bg-[#f4f7f5] border border-[#a6d0be]' : 'hover:bg-[#fafaf8]' }}">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-[20px] {{ $isNext ? 'text-[#0f382c]' : 'text-[#717975]' }}">
+                                        {{ $item['icon'] }}
+                                    </span>
+                                    <div>
+                                        <span class="text-sm font-semibold {{ $isNext ? 'text-[#0f382c] font-bold' : 'text-gray-800' }}">
+                                            {{ $item['key'] }}
+                                        </span>
+                                        @if ($isNext)
+                                            <span class="ml-2 text-[10px] font-bold bg-[#c1ecda] text-[#002117] px-2 py-0.5 rounded-full">
+                                                Berikutnya
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <span id="time-val-{{ strtolower($item['key']) }}"
+                                      class="font-mono text-sm font-bold {{ $isNext ? 'text-[#0f382c]' : 'text-gray-700' }}">
+                                    {{ $timeValue }} {{ $tzSuffix }}
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            </div>
+        </div>
                 @php
                     $prayersList = [
                         ['key' => 'Subuh', 'icon' => 'wb_twilight'],

@@ -12,54 +12,58 @@
         @endif
 
         {{-- 3. Hero Card Donasi & Syiar Dakwah --}}
-        <section class="p-4">
-            <div class="relative rounded-3xl overflow-hidden bg-[#0f382c] text-white p-6 shadow-md border border-[#00392b]">
+        <section class="p-4 md:px-8 md:pt-6">
+            <div class="relative rounded-3xl overflow-hidden bg-[#0f382c] text-white p-6 md:p-8 lg:p-10 shadow-md border border-[#00392b]">
                 {{-- Subtle Decorative Background Pattern Scrim --}}
-                <div class="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-[#3f6658]/30 blur-2xl pointer-events-none"></div>
-                <div class="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[#fed65b]/10 blur-xl pointer-events-none"></div>
+                <div class="absolute -right-8 -bottom-8 w-64 h-64 rounded-full bg-[#3f6658]/30 blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-48 h-48 rounded-full bg-[#fed65b]/10 blur-xl pointer-events-none"></div>
 
-                {{-- Waqf Badge --}}
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 mb-3.5">
-                    <span class="material-symbols-outlined text-[14px] text-[#ffe088]">volunteer_activism</span>
-                    <span class="text-[10px] tracking-normal text-[#c1ecda] font-medium">Wadah Wakaf &amp; Donasi Islami</span>
-                </div>
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="max-w-2xl">
+                        {{-- Waqf Badge --}}
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 mb-3.5">
+                            <span class="material-symbols-outlined text-[14px] text-[#ffe088]">volunteer_activism</span>
+                            <span class="text-[10px] md:text-xs tracking-normal text-[#c1ecda] font-medium">Wadah Wakaf &amp; Donasi Islami</span>
+                        </div>
 
-                {{-- Main Hero Title & Tagline --}}
-                <h2 class="font-serif text-[22px] font-bold text-white leading-tight mb-2 tracking-tight">
-                    Kuantum Pelopor Indonesia
-                </h2>
-                <p class="text-[13px] text-[#99d2bd] leading-relaxed mb-5">
-                    Alirkan pahala jariyah melalui donasi dakwah visual. Bersama hadirkan karya fotografi dan konten Islami bermakna untuk umat.
-                </p>
+                        {{-- Main Hero Title & Tagline --}}
+                        <h2 class="font-serif text-[22px] md:text-[32px] lg:text-[36px] font-bold text-white leading-tight mb-2 tracking-tight">
+                            Kuantum Pelopor Indonesia
+                        </h2>
+                        <p class="text-[13px] md:text-base text-[#99d2bd] leading-relaxed">
+                            Alirkan pahala jariyah melalui donasi dakwah visual. Bersama hadirkan karya fotografi dan konten Islami bermakna untuk umat.
+                        </p>
+                    </div>
 
-                {{-- Action CTA Cluster --}}
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3.5 flex flex-col gap-2.5">
-                    <div class="flex items-center gap-1.5 text-[#ffe088]">
-                        <span class="material-symbols-outlined text-[17px]">account_balance_wallet</span>
-                        <span class="text-[10.5px] font-medium tracking-normal text-[#c1ecda]">Total Donasi Terkumpul</span>
-                    </div>
-                    <div class="flex items-baseline justify-between">
-                        <span class="font-serif text-[22px] font-bold text-white tracking-tight">Rp {{ number_format($totalDonationAmount ?? 0, 0, ',', '.') }}</span>
-                        <span class="text-[11px] text-[#99d2bd]">{{ number_format($totalDonorsCount ?? 0, 0, ',', '.') }} Muhsinin Terlibat</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 text-[10.5px] text-[#99d2bd] pt-0.5">
-                        <span class="material-symbols-outlined text-[14px] text-[#ffe088]">verified</span>
-                        <span class="text-[10.5px] font-medium tracking-normal text-[#c1ecda]">Transparansi Penyaluran Syariah</span>
-                    </div>
-                    <div class="flex items-center gap-2 pt-1">
-                        <button type="button"
-                                onclick="const m=document.getElementById('profile-dialog'); if(m){ m.classList.remove('hidden'); m.classList.add('flex'); }"
-                                class="flex-1 py-2 px-3 rounded-xl bg-[#fed65b] hover:bg-[#ffe088] text-[#0f382c] text-[12px] font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
-                            <span class="material-symbols-outlined text-[16px]">volunteer_activism</span>
-                            <span>Salurkan Donasi</span>
-                        </button>
+                    {{-- Action CTA Cluster --}}
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5 flex flex-col gap-3 min-w-[280px] lg:min-w-[340px]">
+                        <div class="flex items-center gap-1.5 text-[#ffe088]">
+                            <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                            <span class="text-[11px] md:text-xs font-medium tracking-normal text-[#c1ecda]">Total Donasi Terkumpul</span>
+                        </div>
+                        <div class="flex items-baseline justify-between gap-2">
+                            <span class="font-serif text-[22px] md:text-[26px] font-bold text-white tracking-tight">Rp {{ number_format($totalDonationAmount ?? 0, 0, ',', '.') }}</span>
+                            <span class="text-[11px] md:text-xs text-[#99d2bd]">{{ number_format($totalDonorsCount ?? 0, 0, ',', '.') }} Muhsinin Terlibat</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-[#99d2bd] pt-0.5">
+                            <span class="material-symbols-outlined text-[15px] text-[#ffe088]">verified</span>
+                            <span class="text-[11px] font-medium tracking-normal text-[#c1ecda]">Transparansi Penyaluran Syariah</span>
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="button"
+                                    onclick="const m=document.getElementById('profile-dialog'); if(m){ m.classList.remove('hidden'); m.classList.add('flex'); }"
+                                    class="w-full py-2.5 px-4 rounded-xl bg-[#fed65b] hover:bg-[#ffe088] text-[#0f382c] text-xs md:text-sm font-bold flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
+                                <span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+                                <span>Salurkan Donasi</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         {{-- 4. Thumb-Friendly Search Bar --}}
-        <section class="px-4 mb-3">
+        <section class="px-4 md:px-8 mb-3">
             <form action="{{ route('jelajah') }}" method="GET" class="relative flex items-center">
                 <div class="absolute left-3.5 flex items-center pointer-events-none text-[#717975]">
                     <span class="material-symbols-outlined text-[20px]">search</span>
@@ -97,21 +101,21 @@
         </section>
 
         {{-- 6. Bagian "Koleksi Visual Pilihan" --}}
-        <section class="px-4">
+        <section class="px-4 md:px-8">
             {{-- Section Header --}}
             <div class="flex items-center justify-between mb-3.5">
                 <div>
-                    <h3 class="font-serif text-[17px] font-semibold text-[#0f382c] tracking-tight">Koleksi Visual Pilihan</h3>
-                    <p class="text-[11px] text-[#414845]">Kurasi fotografi &amp; karya dakwah berkualitas tinggi</p>
+                    <h3 class="font-serif text-[17px] md:text-xl font-semibold text-[#0f382c] tracking-tight">Koleksi Visual Pilihan</h3>
+                    <p class="text-[11px] md:text-xs text-[#414845]">Kurasi fotografi &amp; karya dakwah berkualitas tinggi</p>
                 </div>
-                <span class="inline-flex items-center gap-1 text-[11px] text-[#735c00] font-bold">
+                <span class="inline-flex items-center gap-1 text-[11px] md:text-xs text-[#735c00] font-bold">
                     <span class="material-symbols-outlined text-[14px]">verified</span>
                     Kurasi Resmi
                 </span>
             </div>
 
-            {{-- 2-Column Responsive Card Grid (Tersambung ke Route Detail Karya) --}}
-            <div class="grid grid-cols-2 gap-3">
+            {{-- 2-Column on Mobile, 3-4 Columns on Desktop --}}
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
                 @forelse ($artworks as $art)
                     @php
                         $artImg = filter_var($art->image_path, FILTER_VALIDATE_URL) 

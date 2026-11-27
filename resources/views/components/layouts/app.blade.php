@@ -106,21 +106,23 @@
         <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-10 bg-[#D4AF37] blur-3xl"></div>
     </div>
 
-    {{-- Container Wrapper: Wide on desktop if $wideLayout is true, otherwise mobile centered --}}
-    <div class="{{ ($wideLayout ?? false) ? 'w-full max-w-7xl min-h-screen bg-[#F9F9F6] shadow-xl relative flex flex-col border-x border-[#E5E7EB]/60 md:px-2' : 'w-full max-w-md min-h-screen bg-[#F9F9F6] shadow-2xl relative flex flex-col border-x border-[#E5E7EB]/60' }}">
+    {{-- Container Wrapper: Fully Responsive (Mobile-First up to 7xl on Desktop) --}}
+    <div class="w-full max-w-md lg:max-w-6xl xl:max-w-7xl min-h-screen bg-[#F9F9F6] shadow-xl relative flex flex-col border-x border-[#E5E7EB]/60 transition-all duration-300">
 
         {{-- Top Header --}}
-        <x-header :title="$title ?? null" :wide-layout="$wideLayout ?? false" />
+        <x-header :title="$title ?? null" :wide-layout="true" />
 
         {{-- Main Page Content --}}
-        <main class="flex-1 pb-24">
+        <main class="flex-1 pb-24 md:pb-12">
             {{ $slot ?? '' }}
             @yield('content')
         </main>
 
-        {{-- Bottom Navigation Bar (5 Menu) --}}
+        {{-- Bottom Navigation Bar (Khusus Mobile < md, disembunyikan di Desktop) --}}
         @if (!($hideBottomNav ?? false))
-            <x-bottom-navbar />
+            <div class="md:hidden">
+                <x-bottom-navbar />
+            </div>
         @endif
 
     </div>

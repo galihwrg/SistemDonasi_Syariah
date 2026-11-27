@@ -1,21 +1,22 @@
 <x-layouts.app title="Koleksi Saya — Kuantum Pelopor Indonesia">
 
-    <div class="px-5 py-4 space-y-4">
+    <div class="px-5 md:px-8 py-5 space-y-5">
 
         {{-- Header Section (Stitch Specifications) --}}
         <div class="flex items-center justify-between">
             <div class="space-y-0.5">
-                <h1 class="font-serif text-[22px] font-bold text-[#0f382c] tracking-tight">
+                <h1 class="font-serif text-[22px] md:text-2xl font-bold text-[#0f382c] tracking-tight">
                     Koleksi Saya
                 </h1>
-                <p class="text-[12px] text-[#414845]">
+                <p class="text-[12px] md:text-sm text-[#414845]">
                     Karya visual tersimpan &amp; disukai
                 </p>
             </div>
             <a href="{{ route('jelajah') }}"
                aria-label="Cari Karya Lain"
-               class="w-9 h-9 rounded-full flex items-center justify-center text-[#0f382c] bg-[#f4f4f1] hover:bg-[#e8e8e5] transition-colors border border-[#c1c8c3]/40">
-                <span class="material-symbols-outlined text-[20px]">search</span>
+               class="px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-semibold text-[#0f382c] bg-[#f4f4f1] hover:bg-[#e8e8e5] transition-colors border border-[#c1c8c3]/40">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                <span class="hidden sm:inline">Cari Karya</span>
             </a>
         </div>
 
@@ -40,9 +41,9 @@
             @endforeach
         </div>
 
-        {{-- Main Saved Artworks Grid / Empty State --}}
+        {{-- Main Saved Artworks Grid / Empty State (Responsive 2 to 4 columns) --}}
         @if ($savedArtworks->isNotEmpty())
-            <div id="collections-grid" class="grid grid-cols-2 gap-3.5 pt-1 items-start">
+            <div id="collections-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 md:gap-5 pt-1 items-start">
                 @foreach ($savedArtworks as $art)
                     @php
                         $artImg = filter_var($art->image_path, FILTER_VALIDATE_URL) 
